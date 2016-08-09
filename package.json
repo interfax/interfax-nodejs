@@ -1,0 +1,43 @@
+{
+  "name": "interfax",
+  "version": "0.1.0",
+  "description": "A wrapper around the InterFAX REST API for sending and receiving faxes.",
+  "main": "lib/interfax.js",
+  "scripts": {
+    "prebuild": "eslint src",
+    "build": "babel -d lib src/ -s inline",
+    "pretest": "eslint tests",
+    "test": "mocha  --compilers js:babel-register tests/*",
+    "watch:test": "watch 'npm test' tests src",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interfax/interfax-nodejs.git"
+  },
+  "keywords": [
+    "fax",
+    "faxing",
+    "interfax"
+  ],
+  "author": "InterFAX",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/interfax/interfax-nodejs/issues"
+  },
+  "contributors": [
+    "cbetta"
+  ],
+  "homepage": "https://github.com/interfax/interfax-nodejs#readme",
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-register": "^6.11.6",
+    "chai": "^3.5.0",
+    "eslint": "^3.2.2",
+    "sinon": "^1.17.5",
+    "sinon-chai": "^2.8.0",
+    "watch": "^0.19.1"
+  }
+}
