@@ -6,10 +6,21 @@ class Client {
   constructor(credentials, version) {
     this._credentials = credentials;
     this._version = version;
+    this._validateCredentials();
   }
 
   get(path, params, callback) {
     this._request('GET', path, params, callback);
+  }
+
+  // private methods
+
+  _validateCredentials() {
+    if (!this._credentials.username)
+      throw new Error('Missing argument: username');
+
+    if (!this._credentials.password)
+      throw new Error('Missing argument: password');
   }
 
   _request(method, path, params, callback) {

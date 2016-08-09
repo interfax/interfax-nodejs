@@ -7,10 +7,10 @@ import library     from '../package.json';
 class InterFAX {
 
   constructor(credentials) {
-    let client = new Client(credentials, library.version);
+    this.client = new Client(credentials, library.version);
 
-    this.account =  new Account(client);
-    this.outbound = new Outbound(client);
+    this.account =  new Account(this.client);
+    this.outbound = new Outbound(this.client);
   }
 }
 
