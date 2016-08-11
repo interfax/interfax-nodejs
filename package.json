@@ -1,6 +1,6 @@
 {
   "name": "interfax",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A wrapper around the InterFAX REST API for sending and receiving faxes.",
   "main": "lib/interfax.js",
   "scripts": {
