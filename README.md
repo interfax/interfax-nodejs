@@ -374,6 +374,30 @@ interfax.documents.create('large_file.pdf', 231234)
 
 **Options:** [`disposition`, `sharing`](https://www.interfax.net/en/dev/rest/reference/2967)
 
+---
+
+### Upload chunk
+
+TBD
+
+---
+
+### Get document list
+
+`interfax.documents.all(options, callback);`
+
+Get a list of previous document uploads which are currently available.
+
+```js
+interfax.documents.all({
+  offset: 10
+}).then(documents => {
+  console.log(documents) //=> a list of documents
+});
+```
+
+**Options:** [`limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2968)
+
 
 ## Contributing
 

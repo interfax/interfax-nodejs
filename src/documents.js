@@ -15,6 +15,10 @@ class Documents {
 
     return this._client.post('/outbound/documents', options, callback);
   }
+
+  all(params, callback) {
+    return this._client.get('/outbound/documents', params, callback);
+  }
 }
 
 export default Documents;

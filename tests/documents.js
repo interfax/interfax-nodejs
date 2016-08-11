@@ -10,6 +10,7 @@ chai.use(sinonChai);
 let documents;
 let client;
 let callback = () => {};
+let options = { limit: 1 };
 
 describe('Documents', () => {
   it('should export a Documents object', () => {
@@ -54,6 +55,22 @@ describe('Documents', () => {
       it('should accept no options and no callback', () => {
         expect(documents.create('file.pdf', 5000)).to.be.eql('Promise');
         expect(client.post).to.have.been.calledWith('/outbound/documents', { name: 'file.pdf', size: 5000 }, undefined);
+      });
+    });
+
+    describe('.all', () => {
+      beforeEach(() => {
+        client.get.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(documents.all(callback)).to.be.eql('Promise');
+        expect(client.get).to.have.been.calledWith('/outbound/documents', callback, undefined);
+      });
+
+      it('should allow for options', () => {
+        documents.all(options, callback);
+        expect(client.get).to.have.been.calledWith('/outbound/documents', options, callback);
       });
     });
   });
