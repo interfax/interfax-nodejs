@@ -19,6 +19,10 @@ class Documents {
   all(params, callback) {
     return this._client.get('/outbound/documents', params, callback);
   }
+
+  find(id, callback) {
+    return this._client.get(`/outbound/documents/${id}`, callback);
+  }
 }
 
 export default Documents;

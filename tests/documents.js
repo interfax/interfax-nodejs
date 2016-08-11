@@ -73,5 +73,16 @@ describe('Documents', () => {
         expect(client.get).to.have.been.calledWith('/outbound/documents', options, callback);
       });
     });
+
+    describe('.find', () => {
+      beforeEach(() => {
+        client.get.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(documents.find(123, callback)).to.be.eql('Promise');
+        expect(client.get).to.have.been.calledWith('/outbound/documents/123', callback);
+      });
+    });
   });
 });

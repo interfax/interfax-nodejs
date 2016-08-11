@@ -398,6 +398,24 @@ interfax.documents.all({
 
 **Options:** [`limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2968)
 
+---
+
+### Get document status
+
+`interfax.documents.find(document_id, callback);`
+
+Get the current status of a specific document upload.
+
+```js
+interfax.documents.find(123456)
+  .then(document => {
+    console.log(document) //=> a document object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2965)
+
+---
 
 ## Contributing
 
