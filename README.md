@@ -161,7 +161,7 @@ interfax.outbound.find(123456)
 
 ---
 
-### Get oubound fax image
+### Get outbound fax image
 
 `interfax.outbound.image(fax_id, callback);`
 
@@ -211,6 +211,29 @@ interfax.outbound.search({
 ```
 
 **Options:** [`ids`, `reference`, `dateFrom`, `dateTo`, `status`, `userId`, `faxNumber`, `limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2959)
+
+## Inbound
+
+[Get list](#get-inbound-fax-list) | [Get record](#get-inbound-fax-record) | [Get image](#get-inbound-fax-image) | [Get emails](#get-forwarding-emails) | [Mark as read](#mark-as-readunread) | [Resend to email](#resend-inbound-fax)
+
+### Get inbound fax list
+
+`interfax.inbound.all(options, callback);`
+
+Retrieves a user's list of inbound faxes. (Sort order is always in descending ID).
+
+```js
+interfax.inbound.all({
+  limit: 5
+}).then(faxes => {
+  console.log(faxes); //=> an array of fax objects
+});
+```
+
+**Options:** [`unreadOnly`, `limit`, `lastId`, `allUsers`](https://www.interfax.net/en/dev/rest/reference/2935)
+
+---
+
 
 ## Contributing
 
