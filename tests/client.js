@@ -50,6 +50,17 @@ describe('Client', () => {
         new Client({username: 'foo'});
       }).to.throw(Error);
     });
+
+    it('should accept the username and password as environment variables', () => {
+      process.env.INTERFAX_USERNAME = 'jdoe';
+      process.env.INTERFAX_PASSWORD = 'test123';
+
+      let client = new Client();
+      expect(client).to.be.an.instanceof(Client);
+
+      process.env.INTERFAX_USERNAME = undefined;
+      process.env.INTERFAX_PASSWORD =  undefined;
+    });
   });
 
   describe('.get', () => {

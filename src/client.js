@@ -6,7 +6,7 @@ import EventEmitter     from 'events';
 class Client {
   constructor(https, credentials, version) {
     this._https = https;
-    this._credentials = credentials;
+    this._credentials = credentials || {};
     this._version = version;
     this._validateCredentials();
   }
@@ -18,9 +18,11 @@ class Client {
   // private methods
 
   _validateCredentials() {
+    this._credentials.username = this._credentials.username || process.env.INTERFAX_USERNAME;
     if (!this._credentials.username)
       throw new Error('Missing argument: username');
 
+    this._credentials.password = this._credentials.password || process.env.INTERFAX_PASSWORD;
     if (!this._credentials.password)
       throw new Error('Missing argument: password');
   }
