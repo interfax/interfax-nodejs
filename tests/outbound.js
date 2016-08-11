@@ -91,5 +91,16 @@ describe('Outbound', () => {
         expect(client.post).to.have.been.calledWith('/outbound/faxes/123/cancel', callback);
       });
     });
+
+    describe('.search', () => {
+      beforeEach(() => {
+        client.get.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(outbound.search({faxNumber: '123'}, callback)).to.be.eql('Promise');
+        expect(client.get).to.have.been.calledWith('/outbound/search', {faxNumber: '123'}, callback);
+      });
+    });
   });
 });

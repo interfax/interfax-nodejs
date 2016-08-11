@@ -22,6 +22,10 @@ class Outbound {
   cancel(id, callback) {
     return this._client.post(`/outbound/faxes/${id}/cancel`, callback);
   }
+
+  search(params, callback) {
+    return this._client.get('/outbound/search', params, callback);
+  }
 }
 
 export default Outbound;

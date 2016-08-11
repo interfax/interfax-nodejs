@@ -192,6 +192,21 @@ interfax.outbound.cancel(123456)
 
 ----
 
+### Search fax list
+
+`interfax.outbound.search(options, callback);`
+
+Search for outbound faxes.
+
+```js
+interfax.outbound.search(faxNumber: '+1230002305555')
+  .then(function(faxes) {
+    console.log(faxes) //=> an array of fax objects
+  });
+```
+
+**Options:** [`ids`, `reference`, `dateFrom`, `dateTo`, `status`, `userId`, `faxNumber`, `limit`, `offset`](https://www.interfax.net/en/dev/rest/reference/2959)
+
 ## Contributing
 
  1. **Fork** the repo on GitHub
