@@ -95,5 +95,16 @@ describe('Documents', () => {
         expect(client.delete).to.have.been.calledWith('/outbound/documents/123', callback);
       });
     });
+
+    describe('.upload', () => {
+      beforeEach(() => {
+        client.request.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(documents.upload(123, 0, 500, 'data', callback)).to.be.eql('Promise');
+        expect(client.request).to.have.been.calledWith('POST', '/outbound/documents/123', { Range: 'bytes=0-500' }, 'data', {  }, callback);
+      });
+    });
   });
 });

@@ -20,21 +20,17 @@ The module is written in ES6 and is compiled to ES5 for backwards compatibility.
 
 ## Getting started
 
-To send a fax from a PDF file:
+All our API calls support Promises to handle asynchrounous callbacks. For example to send a fax from a PDF file:
 
 ```js
 import InterFAX from 'interfax';
-
-let interfax = new InterFAX({
-  username: '...',
-  password: '...'
-});
+let interfax = new InterFAX();
 
 interfax.deliver({
   faxNumber : '+11111111112',
   file : 'folder/fax.pdf'
-}).then(faxId => {
-  console.log(faxId) //=> the Fax ID just created
+}).then(fax => {
+  console.log(fax.id); //=> the Fax ID just created
 })
 .catch(error => {
   console.log(error); //=> an error object
@@ -51,7 +47,7 @@ interfax.deliver({
   if (error) {
     console.log(error); //=> an error object
   } else {
-    console.log(response) //=> the Fax ID just created
+    console.log(response.id); //=> the Fax ID just created
   }
 });
 ```
@@ -296,13 +292,13 @@ Mark a transaction as read/unread.
 // mark as read
 interfax.inbound.mark(123456, true)
   .then((success) => {
-    console.log(success) // boolean
+    console.log(success); // boolean
   });
 
 // mark as unread
 interfax.inbound.mark(123456, false)
   .then((success) => {
-    console.log(success) // boolean
+    console.log(success); // boolean
   });
 ```
 
@@ -318,13 +314,13 @@ Resend an inbound fax to a specific email address.
 // resend to the email(s) to which the fax was previously forwarded
 interfax.inbound.resend(123456)
   .then((success) => {
-    console.log(success) // boolean
+    console.log(success); // boolean
   });
 
 // resend to a specific address
 interfax.inbound.resend(123456, 'test@example.com')
   .then((success) => {
-    console.log(success) // boolean
+    console.log(success); // boolean
   });
 => true
 ```
@@ -337,26 +333,24 @@ interfax.inbound.resend(123456, 'test@example.com')
 
 [Create](#create-document) | [Upload chunk](#upload-chunk) | [Get list](#get-document-list) | [Status](#get-document-status) | [Cancel](#cancel-document)
 
-Document allow for uploading of large files up to 20MB in 200kb chunks.
+Document allow for uploading of large files up to 20MB in 200kb chunks. For example to upload a 500
 
 ```js
-let stream = fs.createReadStream('file.pdf');
-let size   = fs.statSync('file.pdf')['size'];
+import fs from 'fs';
 
-interfax.document.create('test.pdf', size).
-  .then(document => {
-    stream.on('readable', () => {
-      let chunk;
-      let cursor = 0;
+let upload = function(cursor = 0, document, data) {
+  if (cursor >= data.length) { return };
+  let chunk = data.slice(cursor, cursor+500).toString('ASCII');
+  let next_cursor = cursor+chunk.length;
+  
+  interfax.documents.upload(document.id, cursor, next_cursor-1, chunk)
+    .then(() => { upload(next_cursor, document, data); });
+}
 
-      // upload in 500 byte chunks
-      while( (chunk = stream.read(500)) ) {
-        let next_cursor = cursor + chunk.length;
-        interfax.document.upload(document.id, cursor, next_cursor-1, chunk);
-        cursor = next_cursor;
-      }
-    });
-  })
+fs.readFile('tests/test.pdf', function(err, data){
+  interfax.documents.create('test.pdf', data.length)
+    .then(document => { upload(0, document, data); });
+});
 ```
 
 ### Create Documents
@@ -368,7 +362,7 @@ Create a document upload session, allowing you to upload large files in chunks.
 ```js
 interfax.documents.create('large_file.pdf', 231234)
   .then(document => {
-    console.log(document.id) // the ID of the document created
+    console.log(document.id); // the ID of the document created
   });
 ```
 
@@ -378,7 +372,18 @@ interfax.documents.create('large_file.pdf', 231234)
 
 ### Upload chunk
 
-TBD
+`interfax.documents.upload(id, range_start, range_end, chunk, callback);`
+
+Upload a chunk to an existing document upload session.
+
+```js
+interfax.documents.upload(123456, 0, 999, "....binary-data....")
+  .then(document => {
+    console.log(document);
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2966)
 
 ---
 
@@ -392,7 +397,7 @@ Get a list of previous document uploads which are currently available.
 interfax.documents.all({
   offset: 10
 }).then(documents => {
-  console.log(documents) //=> a list of documents
+  console.log(documents); //=> a list of documents
 });
 ```
 
@@ -409,7 +414,7 @@ Get the current status of a specific document upload.
 ```js
 interfax.documents.find(123456)
   .then(document => {
-    console.log(document) //=> a document object
+    console.log(document); //=> a document object
   });
 ```
 
@@ -426,7 +431,7 @@ Cancel a document upload and tear down the upload session, or delete a previous 
 ```js
 interfax.documents.cancel(123456)
   .then(success => {
-    console.log(success) //=> boolean
+    console.log(success); //=> boolean
   })
 ```
 

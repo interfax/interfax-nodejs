@@ -15,8 +15,9 @@ class ResponseHandler {
 
       response.on('end', function() {
         if (isLocation) { result = new Location(response.headers['location']); }
-        else if (isJson) { result = JSON.parse(result); }
         else if (isImage) { result = new Image(result); }
+        else if (isJson && result.length > 0) { result = JSON.parse(result); }
+        else if (isJson && result.length == 0) { result = null; }
 
         if (response.statusCode >= 300) {
           emitter.emit('reject', result);

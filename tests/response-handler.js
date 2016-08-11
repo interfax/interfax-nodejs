@@ -103,5 +103,20 @@ describe('ResponseHandler', () => {
       response.emit('end');
     });
 
+    it('should process an empty body', (done) => {
+      let emitter = new EventEmitter();
+      emitter.on('resolve', (result) => {
+        expect(result).to.eql(null);
+        done();
+      });
+
+      let handler = new ResponseHandler(emitter);
+      let response = new EventEmitter();
+      response.headers = { 'content-type' : 'text/json' };
+
+      handler(response);
+      response.emit('end');
+    });
+
   });
 });

@@ -12,15 +12,31 @@ class Client {
   }
 
   get(path, params, callback) {
-    return this._request('GET', path, params, callback);
+    return this.request('GET', path, {}, null, params, callback);
   }
 
   post(path, params, callback) {
-    return this._request('POST', path, params, callback);
+    return this.request('POST', path, {}, null, params, callback);
   }
 
   delete(path, params, callback) {
-    return this._request('DELETE', path, params, callback);
+    return this.request('DELETE', path, {}, null, params, callback);
+  }
+
+  request(method, path, headers, body, params, callback) {
+    let emitter     = new EventEmitter();
+    let __callback  = this._callback(params, callback);
+    let promise     = this._promise(emitter, __callback);
+    let options     = this._options(method, path, headers, params);
+    var request     = this._https.request(options);
+
+    request.on('response', new ResponseHandler(emitter));
+    request.on('error', new ErrorHandler( emitter));
+
+    if (body) { request.write(body); }
+    request.end();
+
+    return promise;
   }
 
   // private methods
@@ -35,20 +51,6 @@ class Client {
       throw new Error('Missing argument: password');
   }
 
-  _request(method, path, params, callback) {
-    let emitter     = new EventEmitter();
-    let __callback  = this._callback(params, callback);
-    let promise     = this._promise(emitter, __callback);
-    let options     = this._options(method, path, params);
-    var request     = this._https.request(options);
-
-    request.on('response', new ResponseHandler(emitter));
-    request.on('error', new ErrorHandler( emitter));
-    request.end();
-
-    return promise;
-  }
-
   _callback(...args) {
     for (let i = args.length-1; i >= 0; i--) {
       let argument = args[i];
@@ -57,16 +59,16 @@ class Client {
     return null;
   }
 
-  _options(method, path, params) {
+  _options(method, path, headers, params) {
+    headers['User-Agent'] = `InterFAX Node ${this._version}`;
+
     return {
       'host': 'rest.interfax.net',
       'path': this._path(path, params),
       'port': 443,
       'auth': `${this._credentials.username}:${this._credentials.password}`,
       'method': method,
-      'headers': {
-        'User-Agent': `InterFAX Node ${this._version}`
-      }
+      'headers': headers
     };
   }
 
