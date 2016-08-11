@@ -23,6 +23,10 @@ class Documents {
   find(id, callback) {
     return this._client.get(`/outbound/documents/${id}`, callback);
   }
+
+  cancel(id, callback) {
+    return this._client.delete(`/outbound/documents/${id}`, callback);
+  }
 }
 
 export default Documents;

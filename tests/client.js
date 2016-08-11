@@ -125,6 +125,37 @@ describe('Client', () => {
     });
   });
 
+  describe('.delete', () => {
+    beforeEach(() => {
+      client = new Client(https, credentials, version);
+    });
+
+    it('should make the correct http call', (done) => {
+      let _https = sinon.mock(https);
+
+      _https.expects('request').once().withArgs({
+        auth: 'foo:bar',
+        headers: { 'User-Agent': 'InterFAX Node 1.0' },
+        host: 'rest.interfax.net',
+        method: 'DELETE',
+        path: '/foo/bar?limit=1',
+        port: 443
+      }).returns({
+        on: function(_, handler){
+          expect(handler).to.be.an.instanceof(Function);
+        },
+        end: function(){
+          done();
+        }
+      });
+
+      client.delete('/foo/bar', {limit: 1}, () => {});
+
+      _https.verify();
+      _https.restore();
+    });
+  });
+
 
   describe('._promise', () => {
     beforeEach(() => {

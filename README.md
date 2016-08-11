@@ -417,6 +417,23 @@ interfax.documents.find(123456)
 
 ---
 
+### Cancel document
+
+`interfax.documents.cancel(document_id, callback);`
+
+Cancel a document upload and tear down the upload session, or delete a previous upload.
+
+```js
+interfax.documents.cancel(123456)
+  .then(success => {
+    console.log(success) //=> boolean
+  })
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2964)
+
+---
+
 ## Contributing
 
  1. **Fork** the repo on GitHub

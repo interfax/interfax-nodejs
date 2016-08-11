@@ -84,5 +84,16 @@ describe('Documents', () => {
         expect(client.get).to.have.been.calledWith('/outbound/documents/123', callback);
       });
     });
+
+    describe('.cancel', () => {
+      beforeEach(() => {
+        client.delete.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(documents.cancel(123, callback)).to.be.eql('Promise');
+        expect(client.delete).to.have.been.calledWith('/outbound/documents/123', callback);
+      });
+    });
   });
 });

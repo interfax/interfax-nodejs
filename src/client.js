@@ -19,6 +19,10 @@ class Client {
     return this._request('POST', path, params, callback);
   }
 
+  delete(path, params, callback) {
+    return this._request('DELETE', path, params, callback);
+  }
+
   // private methods
 
   _validateCredentials() {
