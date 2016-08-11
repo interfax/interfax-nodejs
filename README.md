@@ -251,7 +251,23 @@ interfax.inbound.find(123456)
 
 ---
 
+### Get inbound fax image
 
+`interfax.inbound.image(fax_id, callback);`
+
+Retrieves a single fax's image.
+
+```js
+interfax.inbound.image(123456)
+  .then(image => {
+    console.log(image.data); //=> TIFF image data
+    image.save('file.tiff'); //=> saves image to file
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2937)
+
+---
 
 ## Contributing
 

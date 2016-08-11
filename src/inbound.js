@@ -10,6 +10,10 @@ class Inbound {
   find(id, callback) {
     return this._client.get(`/inbound/faxes/${id}`, callback);
   }
+
+  image(id, callback) {
+    return this._client.get(`/inbound/faxes/${id}/image`, callback);
+  }
 }
 
 export default Inbound;
