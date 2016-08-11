@@ -10,6 +10,10 @@ class Outbound {
   completed(ids, callback) {
     return this._client.get('/outbound/faxes/completed', { 'ids' : ids }, callback);
   }
+
+  find(id, callback) {
+    return this._client.get(`/outbound/faxes/${id}`, callback);
+  }
 }
 
 export default Outbound;

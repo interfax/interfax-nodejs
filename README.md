@@ -138,6 +138,23 @@ interfax.outbound.completed([123, 234])
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2972)
 
+----
+
+### Get outbound fax record
+
+`interfax.outbound.find(fax_id, callback)`
+
+Retrieves information regarding a previously-submitted fax, including its current status.
+
+```js
+interfax.outbound.find(123456)
+  .then(function(fax) {
+    console.log(fax) //=> fax object
+  })
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2921)
+
 ---
 
 ## Contributing
