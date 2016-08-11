@@ -12,6 +12,8 @@ class ResponseHandler {
       });
 
       response.on('end', function() {
+        console.log(result);
+
         if (isJson) { result = JSON.parse(result); }
         if (isImage) { result = new Image(result); }
 

@@ -22,6 +22,13 @@ class Inbound {
   mark(id, is_read, callback) {
     return this._client.post(`/inbound/faxes/${id}/mark`, { unread: !is_read }, callback);
   }
+
+  resend(id, email, callback) {
+    let options = {};
+    if (typeof(email) === 'string') { options.email = email; }
+    else if(typeof(email) === 'function') { callback = email; }
+    return this._client.post(`/inbound/faxes/${id}/resend`, options, callback);
+  }
 }
 
 export default Inbound;

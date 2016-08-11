@@ -278,7 +278,7 @@ Retrieve the list of email addresses to which a fax was forwarded.
 ```js
 interfax.inbound.emails(123456)
   .then(emails => {
-    console.log(emails); //=> a list of emails
+    console.log(emails); //=> a list of email objects
   });
 ```
 
@@ -295,18 +295,43 @@ Mark a transaction as read/unread.
 ```js
 // mark as read
 interfax.inbound.mark(123456, true)
-  .then(() => {
-    // empty response
+  .then((success) => {
+    console.log(success) // boolean
   });
 
 // mark as unread
 interfax.inbound.mark(123456, false)
-  .then(() => {
-    // empty response
+  .then((success) => {
+    console.log(success) // boolean
   });
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2936)
+
+### Resend inbound fax
+
+`interfax.inbound.resend(fax_id, to_email, callback);`
+
+Resend an inbound fax to a specific email address.
+
+```js
+// resend to the email(s) to which the fax was previously forwarded
+interfax.inbound.resend(123456)
+  .then((success) => {
+    console.log(success) // boolean
+  });
+
+// resend to a specific address
+interfax.inbound.resend(123456, 'test@example.com')
+  .then((success) => {
+    console.log(success) // boolean
+  });
+=> true
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2929)
+
+---
 
 ## Contributing
 

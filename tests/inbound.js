@@ -96,5 +96,21 @@ describe('Inbound', () => {
         expect(client.post).to.have.been.calledWith('/inbound/faxes/123/mark', { unread: true }, callback);
       });
     });
+
+    describe('.resend', () => {
+      beforeEach(() => {
+        client.post.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(inbound.resend(123, 'foo@bar.com', callback)).to.be.eql('Promise');
+        expect(client.post).to.have.been.calledWith('/inbound/faxes/123/resend', { email: 'foo@bar.com'}, callback);
+      });
+
+      it('should work without an email address', () => {
+        expect(inbound.resend(123, callback)).to.be.eql('Promise');
+        expect(client.post).to.have.been.calledWith('/inbound/faxes/123/resend', {}, callback);
+      });
+    });
   });
 });
