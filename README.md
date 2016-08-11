@@ -101,7 +101,70 @@ interfax.account.balance()
 
 ### Send fax
 
-TBD
+`.outbound.deliver(options, callback);`
+
+Submit a fax to a single destination number.
+
+There are a few ways to send a fax. One way is to directly provide a file path or url.
+
+```js
+// with a path
+interfax.outbound.deliver({
+  faxNumber: '+11111111112',
+  file: 'folder/fax.txt'
+}).then(fax => {
+  console.log(fax) //=> fax object
+});
+
+// or with a URL
+interfax.outbound.deliver({
+  faxNumber: '+11111111112',
+  file: 'https://s3.aws.com/example/fax.pdf'
+}).then(...);
+```
+
+InterFAX supports over 20 file types including HTML, PDF, TXT, Word, and many more. For a full list see the [Supported File Types](https://www.interfax.net/en/help/supported_file_types) documentation.
+
+The returned object is a plain object with just an `id`. You can use this ID to load more information, get the image, or cancel the sending of the fax.
+
+```js
+interfax.outbound.deliver({
+  faxNumber: '+11111111112',
+  file: 'folder/fax.txt'
+}).then(fax => {
+  interfax.outbound.cancel(fax.id)
+    .then(success => {
+      // now the fax is cancelled
+    });
+});
+```
+
+Additionally you can create a [`FaxFile`](#faxfile) with binary data and pass this in as well.
+
+```js
+let data = fs.readSync('fax.pdf');
+let file = interfax.files.create(data, mime_type: 'application/pdf');
+
+interfax.outbound.deliver({
+  faxNumber: "+11111111112",
+  file: file
+}).then(...);
+```
+
+To send multiple files just pass in an array of strings and [`FaxFile`](#faxfile) objects.
+
+```js
+interfax.outbound.deliver({
+  faxNumber: "+11111111112",
+  files: ['file://fax.pdf', 'https://s3.aws.com/example/fax.pdf']
+}).then(...);
+```
+
+Under the hood every path and string is turned into a  [`FaxFile`](#faxfile) object. For more information see [the documentation](#faxfile) for this class.
+
+**Options:** [`contact`, `postponeTime`, `retriesToPerform`, `csid`, `pageHeader`, `reference`, `pageSize`, `fitToPage`, `pageOrientation`, `resolution`, `rendering`](https://www.interfax.net/en/dev/rest/reference/2918)
+
+**Alias**: `interfax.deliver`
 
 ---
 
@@ -342,7 +405,7 @@ let upload = function(cursor = 0, document, data) {
   if (cursor >= data.length) { return };
   let chunk = data.slice(cursor, cursor+500).toString('ASCII');
   let next_cursor = cursor+chunk.length;
-  
+
   interfax.documents.upload(document.id, cursor, next_cursor-1, chunk)
     .then(() => { upload(next_cursor, document, data); });
 }

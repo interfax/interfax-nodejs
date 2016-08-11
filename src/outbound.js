@@ -1,6 +1,11 @@
 class Outbound {
-  constructor(client) {
+  constructor(client, delivery) {
     this._client = client;
+    this._delivery = delivery;
+  }
+
+  deliver(params, callback) {
+    return this._delivery.deliver(params, callback);
   }
 
   all(params, callback) {

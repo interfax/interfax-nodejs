@@ -1,5 +1,6 @@
 import Outbound   from '../src/outbound.js';
 import Client     from '../src/client.js';
+import Delivery   from '../src/delivery.js';
 
 import chai, { expect } from 'chai';
 import sinon            from 'sinon';
@@ -9,6 +10,7 @@ chai.use(sinonChai);
 
 let outbound;
 let client;
+let delivery;
 let callback = () => {};
 let options = { limit: 1 };
 
@@ -20,8 +22,9 @@ describe('Outbound', () => {
 
   describe('.instance', () => {
     beforeEach(() => {
-      client  = sinon.createStubInstance(Client);
-      outbound = new Outbound(client);
+      client    = sinon.createStubInstance(Client);
+      delivery  = sinon.createStubInstance(Delivery);
+      outbound  = new Outbound(client, delivery);
     });
 
     it('should be an Outbound object', () => {
@@ -30,6 +33,21 @@ describe('Outbound', () => {
 
     it('should save the client', () => {
       expect(outbound._client).to.be.equal(client);
+    });
+
+    it('should initialize the Delivery object', () => {
+      expect(outbound._delivery).to.be.an.instanceof(Delivery);
+    });
+
+    describe('.deliver', () => {
+      beforeEach(() => {
+        delivery.deliver.returns('Promise');
+      });
+
+      it('should pass to the Delivery object', () => {
+        expect(outbound.deliver(options, callback)).to.be.eql('Promise');
+        expect(delivery.deliver).to.have.been.calledWith(options, callback);
+      });
     });
 
     describe('.all', () => {

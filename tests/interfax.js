@@ -3,6 +3,7 @@ import Account      from '../src/account.js';
 import Client       from '../src/client.js';
 import Outbound     from '../src/outbound.js';
 import Inbound      from '../src/inbound.js';
+import Delivery     from '../src/delivery.js';
 
 import { expect } from 'chai';
 
@@ -34,6 +35,10 @@ describe('InterFAX', () => {
 
     it('should initialise the Account client', () => {
       expect(interfax.account).to.be.an.instanceof(Account);
+    });
+
+    it('should initialise the Delivery client', () => {
+      expect(interfax.delivery).to.be.an.instanceof(Delivery);
     });
 
     it('should initialise the Outbound client', () => {
