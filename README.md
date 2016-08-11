@@ -125,7 +125,7 @@ interfax.outbound.all({
 
 ### Get completed fax list
 
-`interfax.outbound.completed(array_of_ids, callback)`
+`interfax.outbound.completed(array_of_ids, callback);`
 
 Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
 
@@ -142,7 +142,7 @@ interfax.outbound.completed([123, 234])
 
 ### Get outbound fax record
 
-`interfax.outbound.find(fax_id, callback)`
+`interfax.outbound.find(fax_id, callback);`
 
 Retrieves information regarding a previously-submitted fax, including its current status.
 
@@ -156,6 +156,24 @@ interfax.outbound.find(123456)
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2921)
 
 ---
+
+### Get oubound fax image
+
+`interfax.outbound.image(fax_id, callback);`
+
+Retrieve the fax image (TIFF file) of a submitted fax.
+
+```js
+interfax.outbound.image(123456)
+  .then(function(image) {
+    console.log(image.data) //=> TIFF image data
+    image.save('file.tiff') //=> saves image to file
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2941)
+
+----
 
 ## Contributing
 

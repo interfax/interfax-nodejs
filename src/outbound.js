@@ -14,6 +14,10 @@ class Outbound {
   find(id, callback) {
     return this._client.get(`/outbound/faxes/${id}`, callback);
   }
+
+  image(id, callback) {
+    return this._client.get(`/outbound/faxes/${id}/image`, callback);
+  }
 }
 
 export default Outbound;
