@@ -234,6 +234,24 @@ interfax.inbound.all({
 
 ---
 
+### Get inbound fax record
+
+`interfax.inbound.find(fax_id, callback);`
+
+Retrieves a single fax's metadata (receive time, sender number, etc.).
+
+```js
+interfax.inbound.find(123456)
+  .then(fax => {
+    console.log(fax); //=> fax object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2938)
+
+---
+
+
 
 ## Contributing
 

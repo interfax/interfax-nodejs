@@ -47,5 +47,16 @@ describe('Inbound', () => {
         expect(client.get).to.have.been.calledWith('/inbound/faxes', options, callback);
       });
     });
+
+    describe('.find', () => {
+      beforeEach(() => {
+        client.get.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(inbound.find(123, callback)).to.be.eql('Promise');
+        expect(client.get).to.have.been.calledWith('/inbound/faxes/123', callback);
+      });
+    });
   });
 });
