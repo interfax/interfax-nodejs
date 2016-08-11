@@ -47,5 +47,16 @@ describe('Outbound', () => {
         expect(client.get).to.have.been.calledWith('/outbound/faxes', options, callback);
       });
     });
+
+    describe('.completed', () => {
+      beforeEach(() => {
+        client.get.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(outbound.completed([1,2], callback)).to.be.eql('Promise');
+        expect(client.get).to.have.been.calledWith('/outbound/faxes/completed', { ids: [1,2] } , callback);
+      });
+    });
   });
 });

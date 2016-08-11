@@ -55,11 +55,11 @@ interfax.deliver({
 
 # Usage
 
-[Client](#client) | [Account](#account)
+[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Helper Classes](#helper-classes)
 
 ## Client
 
-The client follows the [12-factor](https://github.com/interfax/interfax-ruby/blob/rest-client/12factor.net/config) apps principle and can be either set directly or via environment variables.
+The client follows the [12-factor](http://12factor.net/config) apps principle and can be either set directly or via environment variables.
 
 ```js
 var InterFAX = require('interfax');
@@ -80,19 +80,65 @@ All connections are established over HTTPS.
 
 ## Account
 
-#### Balance
+### Balance
 
-`interfax.account.balance(callback)`
+`interfax.account.balance(callback);`
 
 Determine the remaining faxing credits in your account.
 
 ```js
 interfax.account.balance()
-  .then(response => {
-    console.log(response.body) //=> 9.86
+  .then(function(balance) {
+    console.log(balance) //=> 9.86
   })
 ```
 
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/3001)
+
+## Outbound
+
+[Send](#send-fax) | [Get list](#get-outbound-fax-list) | [Get completed list](#get-completed-fax-list) | [Get record](#get-outbound-fax-record) | [Get image](#get-outbound-fax-image) | [Cancel fax](#cancel-a-fax) | [Search](#search-fax-list)
+
+### Send fax
+
+TBD
+
+---
+
+### Get outbound fax list
+
+`interfax.outbound.all(options, callback);`
+
+Get a list of recent outbound faxes (which does not include batch faxes).
+
+```js
+interfax.outbound.all({
+  limit: 5
+}).then(function(faxes) {
+  console.log(faxes) //=> an array of fax objects
+});
+```
+
+**Options:** [`limit`, `lastId`, `sortOrder`, `userId`](https://www.interfax.net/en/dev/rest/reference/2920)
+
+---
+
+### Get completed fax list
+
+`interfax.outbound.completed(array_of_ids, callback)`
+
+Get details for a subset of completed faxes from a submitted list. (Submitted id's which have not completed are ignored).
+
+```js
+interfax.outbound.completed([123, 234])
+  .then(function(faxes) {
+    console.log(faxes) //=> an array of fax objects
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2972)
+
+---
 
 ## Contributing
 
