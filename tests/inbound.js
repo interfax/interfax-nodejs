@@ -80,5 +80,21 @@ describe('Inbound', () => {
         expect(client.get).to.have.been.calledWith('/inbound/faxes/123/emails', callback);
       });
     });
+
+    describe('.mark', () => {
+      beforeEach(() => {
+        client.post.returns('Promise');
+      });
+
+      it('should call the client when marking as read', () => {
+        expect(inbound.mark(123, true, callback)).to.be.eql('Promise');
+        expect(client.post).to.have.been.calledWith('/inbound/faxes/123/mark', { unread: false }, callback);
+      });
+
+      it('should call the client when marking as read', () => {
+        expect(inbound.mark(123, false, callback)).to.be.eql('Promise');
+        expect(client.post).to.have.been.calledWith('/inbound/faxes/123/mark', { unread: true }, callback);
+      });
+    });
   });
 });

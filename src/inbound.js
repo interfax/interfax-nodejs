@@ -18,6 +18,10 @@ class Inbound {
   emails(id, callback) {
     return this._client.get(`/inbound/faxes/${id}/emails`, callback);
   }
+
+  mark(id, is_read, callback) {
+    return this._client.post(`/inbound/faxes/${id}/mark`, { unread: !is_read }, callback);
+  }
 }
 
 export default Inbound;

@@ -278,13 +278,35 @@ Retrieve the list of email addresses to which a fax was forwarded.
 ```js
 interfax.inbound.emails(123456)
   .then(emails => {
-    console.log(emails); //=> a list of emails 
+    console.log(emails); //=> a list of emails
   });
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2930)
 
 ---
+
+### Mark as read/unread
+
+`interfax.inbound.mark(fax_id, is_read, callback);`
+
+Mark a transaction as read/unread.
+
+```js
+// mark as read
+interfax.inbound.mark(123456, true)
+  .then(() => {
+    // empty response
+  });
+
+// mark as unread
+interfax.inbound.mark(123456, false)
+  .then(() => {
+    // empty response
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2936)
 
 ## Contributing
 
