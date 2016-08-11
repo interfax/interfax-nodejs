@@ -15,6 +15,10 @@ class Client {
     return this._request('GET', path, params, callback);
   }
 
+  post(path, params, callback) {
+    return this._request('POST', path, params, callback);
+  }
+
   // private methods
 
   _validateCredentials() {

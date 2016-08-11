@@ -80,5 +80,16 @@ describe('Outbound', () => {
         expect(client.get).to.have.been.calledWith('/outbound/faxes/123/image', callback);
       });
     });
+
+    describe('.cancel', () => {
+      beforeEach(() => {
+        client.post.returns('Promise');
+      });
+
+      it('should call the client', () => {
+        expect(outbound.cancel(123, callback)).to.be.eql('Promise');
+        expect(client.post).to.have.been.calledWith('/outbound/faxes/123/cancel', callback);
+      });
+    });
   });
 });

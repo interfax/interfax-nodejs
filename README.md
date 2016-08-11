@@ -175,6 +175,23 @@ interfax.outbound.image(123456)
 
 ----
 
+### Cancel a fax
+
+`interfax.outbound.cancel(fax_id, callback);`
+
+Cancel a fax in progress.
+
+```js
+interfax.outbound.cancel(123456)
+  .then(function(fax) {
+    console.log(fax) //=> fax object
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2939)
+
+----
+
 ## Contributing
 
  1. **Fork** the repo on GitHub

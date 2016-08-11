@@ -18,6 +18,10 @@ class Outbound {
   image(id, callback) {
     return this._client.get(`/outbound/faxes/${id}/image`, callback);
   }
+
+  cancel(id, callback) {
+    return this._client.post(`/outbound/faxes/${id}/cancel`, callback);
+  }
 }
 
 export default Outbound;
