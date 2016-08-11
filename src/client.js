@@ -1,5 +1,7 @@
 import ResponseHandler  from './response-handler';
 import ErrorHandler     from './error-handler';
+import Promise          from 'bluebird';
+import EventEmitter     from 'events';
 
 class Client {
   constructor(https, credentials, version) {
@@ -10,7 +12,7 @@ class Client {
   }
 
   get(path, params, callback) {
-    this._request('GET', path, params, callback);
+    return this._request('GET', path, params, callback);
   }
 
   // private methods
@@ -24,13 +26,17 @@ class Client {
   }
 
   _request(method, path, params, callback) {
+    let emitter     = new EventEmitter();
     let __callback  = this._callback(params, callback);
+    let promise     = this._promise(emitter, __callback);
     let options     = this._options(method, path, params);
     var request     = this._https.request(options);
-    console.log(request.on);
-    request.on('response', new ResponseHandler(__callback));
-    request.on('error', new ErrorHandler(__callback));
+
+    request.on('response', new ResponseHandler(emitter));
+    request.on('error', new ErrorHandler( emitter));
     request.end();
+
+    return promise;
   }
 
   _callback(...args) {
@@ -62,6 +68,19 @@ class Client {
   _query(params) {
     if (typeof(params) !== 'object') params = {};
     return Object.keys(params).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join('&');
+  }
+
+  _promise(emitter, callback) {
+    return new Promise((resolve, reject) => {
+      emitter.on('resolve', (response) => {
+        if (callback) { callback(null, response); }
+        resolve(response);
+      });
+      emitter.on('reject', (error) => {
+        if (callback) { callback(error, null); }
+        reject(error);
+      });
+    });
   }
 }
 

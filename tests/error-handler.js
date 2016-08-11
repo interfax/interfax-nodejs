@@ -1,4 +1,5 @@
 import ErrorHandler     from '../src/error-handler.js';
+import EventEmitter     from 'events';
 
 import { expect } from 'chai';
 
@@ -15,12 +16,13 @@ describe('ErrorHandler', () => {
     });
 
     it('should should pass through an error', (done) => {
-      let callback = (error, response) => {
-        expect(error).to.be.equal('error');
-        expect(response).to.be.null;
+      let emitter = new EventEmitter();
+      emitter.on('reject', (error) => {
+        expect(error).to.eql('error');
         done();
-      };
-      let handler = new ErrorHandler(callback);
+      });
+
+      let handler = new ErrorHandler(emitter);
       handler('error');
     });
   });

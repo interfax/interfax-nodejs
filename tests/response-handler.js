@@ -16,13 +16,13 @@ describe('ResponseHandler', () => {
     });
 
     it('should process a json response', (done) => {
-      let callback = (error, response) => {
-        expect(response).to.be.eql({ result: 1 });
-        expect(error).to.be.null;
+      let emitter = new EventEmitter();
+      emitter.on('resolve', (result) => {
+        expect(result).to.eql({ result: 1 });
         done();
-      };
+      });
 
-      let handler = new ResponseHandler(callback);
+      let handler = new ResponseHandler(emitter);
       let response = new EventEmitter();
       response.headers = { 'content-type' : 'text/json' };
 
@@ -34,13 +34,13 @@ describe('ResponseHandler', () => {
 
 
     it('should process a text response', (done) => {
-      let callback = (error, response) => {
-        expect(response).to.be.eql('Hello World!');
-        expect(error).to.be.null;
+      let emitter = new EventEmitter();
+      emitter.on('resolve', (result) => {
+        expect(result).to.eql('Hello World!');
         done();
-      };
+      });
 
-      let handler = new ResponseHandler(callback);
+      let handler = new ResponseHandler(emitter);
       let response = new EventEmitter();
       response.headers = {};
 
@@ -50,20 +50,38 @@ describe('ResponseHandler', () => {
       response.emit('end');
     });
 
-    it('should process an error', (done) => {
-      let callback = (error, response) => {
+    it('should process a direct error', (done) => {
+      let emitter = new EventEmitter();
+      emitter.on('reject', (error) => {
         expect(error).to.be.equal('error');
-        expect(response).to.be.null;
         done();
-      };
+      });
 
-      let handler = new ResponseHandler(callback);
+      let handler = new ResponseHandler(emitter);
       let response = new EventEmitter();
       response.headers = {};
 
       handler(response);
 
       response.emit('close', 'error');
+    });
+
+    it('should process a status code error', (done) => {
+      let emitter = new EventEmitter();
+      emitter.on('reject', (error) => {
+        expect(error).to.eql({ code: 123 });
+        done();
+      });
+
+      let handler = new ResponseHandler(emitter);
+      let response = new EventEmitter();
+      response.headers = { 'content-type' : 'text/json' };
+      response.statusCode = 400;
+
+      handler(response);
+
+      response.emit('data', '{ "code": 123 }');
+      response.emit('end');
     });
 
   });

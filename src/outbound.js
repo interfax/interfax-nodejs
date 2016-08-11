@@ -4,7 +4,7 @@ class Outbound {
   }
 
   all(params, callback) {
-    this._client.get('/outbound/faxes', params, callback);
+    return this._client.get('/outbound/faxes', params, callback);
   }
 }
 

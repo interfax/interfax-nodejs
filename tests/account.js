@@ -33,11 +33,11 @@ describe('Account', () => {
 
     describe('.balance', () => {
       beforeEach(() => {
-        client.get.returns(null);
+        client.get.returns('Promise');
       });
 
       it('should call the client', () => {
-        account.balance(callback);
+        expect(account.balance(callback)).to.be.eql('Promise');
         expect(client.get).to.have.been.calledWith('/accounts/self/ppcards/balance', callback);
       });
     });

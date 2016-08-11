@@ -1,7 +1,7 @@
 class ErrorHandler {
-  constructor(callback) {
+  constructor(emitter) {
     return (error) => {
-      callback(error, null);
+      emitter.emit('reject', error);
     };
   }
 }

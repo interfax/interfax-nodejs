@@ -32,13 +32,11 @@ var interfax = new InterFAX({
 interfax.deliver({
   'faxNumber' : "+11111111112",
   'file' : 'folder/fax.pdf'
-}).then(response => {
-  console.log(response.statusCode);
-  console.log(response.body);
-  console.log(response.headers);
+}).then(faxId => {
+  console.log(faxId) //=> the Fax ID just created
 })
 .catch(error => {
-  console.log(error.response.statusCode);
+  console.log(error); //=> an error object
 });
 
 // with a callback

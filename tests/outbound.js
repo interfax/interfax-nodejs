@@ -34,11 +34,11 @@ describe('Outbound', () => {
 
     describe('.all', () => {
       beforeEach(() => {
-        client.get.returns(null);
+        client.get.returns('Promise');
       });
 
       it('should call the client', () => {
-        outbound.all(callback);
+        expect(outbound.all(callback)).to.be.eql('Promise');
         expect(client.get).to.have.been.calledWith('/outbound/faxes', callback, undefined);
       });
 

@@ -1,5 +1,6 @@
-import Client                from '../src/client.js';
-import https        from 'https';
+import Client           from '../src/client.js';
+import https            from 'https';
+import EventEmitter     from 'events';
 
 import chai, { expect } from 'chai';
 import sinon            from 'sinon';
@@ -79,6 +80,62 @@ describe('Client', () => {
 
       _https.verify();
       _https.restore();
+    });
+  });
+
+  describe('._promise', () => {
+    beforeEach(() => {
+      client = new Client(https, credentials, version);
+    });
+
+    describe('on resolve', () => {
+      it('should call the emitter', (done) => {
+        let emitter = new EventEmitter();
+
+        let promise = client._promise(emitter, null);
+        promise.then((response) => {
+          expect(response).to.eql('result');
+          done();
+        });
+        emitter.emit('resolve', 'result');
+      });
+
+      it('should call the callback if it exists', (done) => {
+        let emitter = new EventEmitter();
+
+        client._promise(emitter, (error, response) => {
+          expect(error).to.be.null;
+          expect(response).to.eql('result');
+          done();
+        });
+
+        emitter.emit('resolve', 'result');
+      });
+    });
+
+    describe('on reject', () => {
+      it('should call the emitter', (done) => {
+        let emitter = new EventEmitter();
+
+        let promise = client._promise(emitter, null);
+        promise.catch((error) => {
+          expect(error).to.eql('error');
+          done();
+        });
+        emitter.emit('reject', 'error');
+      });
+
+      it('should call the callback if it exists', (done) => {
+        let emitter = new EventEmitter();
+
+        client._promise(emitter, (error, response) => {
+          expect(response).to.be.null;
+          expect(error).to.eql('error');
+          done();
+        });
+
+        emitter.emit('reject', 'error');
+      });
     });
   });
 });

@@ -1,5 +1,5 @@
 class ResponseHandler {
-  constructor(callback) {
+  constructor(emitter) {
     return (response) => {
       let result = '';
       let isJson = response.headers['content-type'] == 'text/json';
@@ -9,13 +9,17 @@ class ResponseHandler {
       });
 
       response.on('end', function() {
-        if (isJson) result = JSON.parse(result);
+        if (isJson) { result = JSON.parse(result); }
 
-        callback(null, result);
+        if (response.statusCode >= 300) {
+          emitter.emit('reject', result);
+        } else {
+          emitter.emit('resolve', result);
+        }
       });
 
       response.on('close', function(error) {
-        callback(error, null);
+        emitter.emit('reject', error);
       });
     };
   }

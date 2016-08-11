@@ -5,7 +5,7 @@ class Account {
   }
 
   balance(callback) {
-    this._client.get('/accounts/self/ppcards/balance', callback);
+    return this._client.get('/accounts/self/ppcards/balance', callback);
   }
 }
 
