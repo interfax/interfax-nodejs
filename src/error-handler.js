@@ -1,8 +1,9 @@
-function errorHandler(callback) {
-
-  return function(error) {
-    callback(error, null);
-  };
+class ErrorHandler {
+  constructor(callback) {
+    return (error) => {
+      callback(error, null);
+    };
+  }
 }
 
-export default errorHandler;
+export default ErrorHandler;

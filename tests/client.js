@@ -1,8 +1,14 @@
-import Client       from '../src/client.js';
+import Client                from '../src/client.js';
+import https        from 'https';
 
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import sinon            from 'sinon';
+import sinonChai        from 'sinon-chai';
+
+chai.use(sinonChai);
 
 let client;
+
 let credentials = {
   username: 'foo',
   password: 'bar'
@@ -17,7 +23,7 @@ describe('Client', () => {
 
   describe('.instance', () => {
     beforeEach(() => {
-      client = new Client(credentials, version);
+      client = new Client(https, credentials, version);
     });
 
     it('should be an Client object', () => {
@@ -42,6 +48,37 @@ describe('Client', () => {
       expect(() => {
         new Client({username: 'foo'});
       }).to.throw(Error);
+    });
+  });
+
+  describe('.get', () => {
+    beforeEach(() => {
+      client = new Client(https, credentials, version);
+    });
+
+    it('should make the correct http call', (done) => {
+      let _https = sinon.mock(https);
+
+      _https.expects('request').once().withArgs({
+        auth: 'foo:bar',
+        headers: { 'User-Agent': 'InterFAX Node 1.0' },
+        host: 'rest.interfax.net',
+        method: 'GET',
+        path: '/foo/bar?limit=1',
+        port: 443
+      }).returns({
+        on: function(_, handler){
+          expect(handler).to.be.an.instanceof(Function);
+        },
+        end: function(){
+          done();
+        }
+      });
+
+      client.get('/foo/bar', {limit: 1}, () => {});
+
+      _https.verify();
+      _https.restore();
     });
   });
 });

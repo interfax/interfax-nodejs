@@ -1,9 +1,9 @@
-import https            from 'https';
-import responseHandler  from './response-handler';
-import errorHandler     from './error-handler';
+import ResponseHandler  from './response-handler';
+import ErrorHandler     from './error-handler';
 
 class Client {
-  constructor(credentials, version) {
+  constructor(https, credentials, version) {
+    this._https = https;
     this._credentials = credentials;
     this._version = version;
     this._validateCredentials();
@@ -26,10 +26,10 @@ class Client {
   _request(method, path, params, callback) {
     let __callback  = this._callback(params, callback);
     let options     = this._options(method, path, params);
-    var request     = https.request(options);
-
-    request.on('response', responseHandler(__callback));
-    request.on('error', errorHandler(__callback));
+    var request     = this._https.request(options);
+    console.log(request.on);
+    request.on('response', new ResponseHandler(__callback));
+    request.on('error', new ErrorHandler(__callback));
     request.end();
   }
 
