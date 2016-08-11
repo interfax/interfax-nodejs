@@ -333,6 +333,48 @@ interfax.inbound.resend(123456, 'test@example.com')
 
 ---
 
+## Documents
+
+[Create](#create-document) | [Upload chunk](#upload-chunk) | [Get list](#get-document-list) | [Status](#get-document-status) | [Cancel](#cancel-document)
+
+Document allow for uploading of large files up to 20MB in 200kb chunks.
+
+```js
+let stream = fs.createReadStream('file.pdf');
+let size   = fs.statSync('file.pdf')['size'];
+
+interfax.document.create('test.pdf', size).
+  .then(document => {
+    stream.on('readable', () => {
+      let chunk;
+      let cursor = 0;
+
+      // upload in 500 byte chunks
+      while( (chunk = stream.read(500)) ) {
+        let next_cursor = cursor + chunk.length;
+        interfax.document.upload(document.id, cursor, next_cursor-1, chunk);
+        cursor = next_cursor;
+      }
+    });
+  })
+```
+
+### Create Documents
+
+`interfax.documents.create(name, size, options, callback);`
+
+Create a document upload session, allowing you to upload large files in chunks.
+
+```js
+interfax.documents.create('large_file.pdf', 231234)
+  .then(document => {
+    console.log(document.id) // the ID of the document created
+  });
+```
+
+**Options:** [`disposition`, `sharing`](https://www.interfax.net/en/dev/rest/reference/2967)
+
+
 ## Contributing
 
  1. **Fork** the repo on GitHub

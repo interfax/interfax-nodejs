@@ -175,7 +175,7 @@ describe('Client', () => {
           expect(response).to.be.null;
           expect(error).to.eql('error');
           done();
-        });
+        }).catch(() => {});
 
         emitter.emit('reject', 'error');
       });
