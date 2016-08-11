@@ -269,6 +269,23 @@ interfax.inbound.image(123456)
 
 ---
 
+### Get forwarding emails
+
+`interfax.inbound.emails(fax_id, callback);`
+
+Retrieve the list of email addresses to which a fax was forwarded.
+
+```js
+interfax.inbound.emails(123456)
+  .then(emails => {
+    console.log(emails); //=> a list of emails 
+  });
+```
+
+**More:** [documentation](https://www.interfax.net/en/dev/rest/reference/2930)
+
+---
+
 ## Contributing
 
  1. **Fork** the repo on GitHub
