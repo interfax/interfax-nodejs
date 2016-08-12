@@ -4,6 +4,9 @@ import mime from 'mime';
 class File {
   constructor(documents, location, options) {
     this._documents = documents;
+    this.ready = false;
+    this._callbacks = [];
+
     options = options || {};
     this._chunkSize = options.chunkSize || 1024*1024;
 
@@ -16,6 +19,11 @@ class File {
     }
   }
 
+  onReady(callback) {
+    if (this.ready) return callback();
+    this._callbacks.push(callback);
+  }
+
   initializeBinary(data, mimeType) {
     if (data.length > this._chunkSize) {
       return this.initializeDocument(data, mimeType);
@@ -23,11 +31,13 @@ class File {
 
     this.header = `Content-Type: ${mimeType}`;
     this.body   = data;
+    this._triggerReady(true);
   }
 
   initializeUrl(url) {
     this.header = `Content-Location: ${url}`;
     this.body   = null;
+    this._triggerReady(true);
   }
 
   initializePath(path) {
@@ -50,12 +60,23 @@ class File {
   }
 
   _upload(cursor, document, data) {
-    if (cursor >= data.length) { return; }
+    if (cursor >= data.length) {
+      this._triggerReady(true);
+      return;
+    }
     let chunk = data.slice(cursor, cursor+this._chunkSize);
-    let nextCursor = cursor+chunk.length;
+    let nextCursor = cursor+Buffer.byteLength(chunk);
 
     this._documents.upload(document.id, cursor, nextCursor-1, chunk)
-      .then(() => { this._upload(nextCursor, document, data); });
+      .then(() => { this._upload(nextCursor, document, data); })
+      .catch((error) => { this._triggerReady(error); });
+  }
+
+  _triggerReady(response) {
+    this.ready = (response === true);
+    for (let callback of this._callbacks) {
+      callback(response);
+    }
   }
 }
 

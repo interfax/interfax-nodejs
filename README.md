@@ -1,3 +1,4 @@
+
 # InterFAX Node Library
 
 ## NOTE: This is still a work in progress
@@ -67,13 +68,13 @@ import InterFAX from 'interfax';
 let interfax = new InterFAX({
   username: '...',
   password: '...'
-})
+});
 
 // Alternative: Initialize using
 // environment variables
 // * INTERFAX_USERNAME
 // * INTERFAX_PASSWORD
-let interfax = new InterFAX()
+let interfax = new InterFAX();
 ```
 
 All connections are established over HTTPS.

@@ -1,4 +1,5 @@
 import File from './file';
+import EventEmitter     from 'events';
 
 class Delivery {
 
@@ -10,16 +11,28 @@ class Delivery {
 
   deliver(params, callback) {
     let [validatedParams, files] = this._validateParams(params);
-    let fileObjects              = this._generateFileObjects(files);
-    let body                     = this._bodyFor(fileObjects);
-    let length                   = this._lengthFor(body);
+    let emitter     = new EventEmitter();
 
-    let headers = {
-      'Content-Type' : `multipart/mixed; boundary=${this._boundary}`,
-      'Content-Length' : length
-    };
+    this._generateFileObjects(files, (error, fileObjects) => {
+      if (error) {
+        return emitter.emit('reject', error);
+      }
 
-    return this._client.request('POST', '/outbound/faxes', headers, body, validatedParams, callback);
+      let body                     = this._bodyFor(fileObjects);
+      let length                   = this._lengthFor(body);
+      let headers = {
+        'Content-Type' : `multipart/mixed; boundary=${this._boundary}`,
+        'Content-Length' : length
+      };
+
+      this._client.request('POST', '/outbound/faxes', headers, body, validatedParams).then(result => {
+        emitter.emit('resolve', result);
+      }).catch(error => {
+        emitter.emit('reject', error);
+      });
+    });
+
+    return this._promise(emitter, callback);
   }
 
   _validateParams(params) {
@@ -38,19 +51,31 @@ class Delivery {
     return [params, files];
   }
 
-  _generateFileObjects(files) {
-    return files.map((file) => {
+  _generateFileObjects(files, callback) {
+    let objects = [];
+
+    for (let file of files) {
+      let object = file;
       if (typeof(file) === 'string') {
-        return new File(this._documents, file);
-      } else {
-        return file;
+        object = new File(this._documents, file);
       }
-    });
+      object.onReady((response) => {
+        if (!object.ready) { callback(response, null); }
+        objects.push(object);
+        if (objects.length == files.length) { callback(null, objects); }
+      });
+    }
+    return null;
   }
 
   _bodyFor(files) {
     let parts = files.map(file => {
-      return [`--${this._boundary}`, '\r\n', file.header, '\r\n\r\n', file.body, '\r\n\r\n'];
+      let elements = [`--${this._boundary}`, '\r\n', file.header, '\r\n\r\n'];
+      if (file.body) {
+        elements.push(file.body);
+        elements.push('\r\n\r\n');
+      }
+      return elements;
     });
     parts.push(`--${this._boundary}--`);
     return this._flatten(parts);
@@ -64,6 +89,19 @@ class Delivery {
 
   _flatten(list) {
     return [].concat.apply([], list);
+  }
+
+  _promise(emitter, callback) {
+    return new Promise((resolve, reject) => {
+      emitter.on('resolve', (response) => {
+        if (callback) { callback(null, response); }
+        resolve(response);
+      });
+      emitter.on('reject', (error) => {
+        if (callback) { callback(error, null); }
+        reject(error);
+      });
+    });
   }
 }
 

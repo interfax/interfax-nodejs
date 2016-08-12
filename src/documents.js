@@ -30,7 +30,7 @@ class Documents {
 
   upload(id, range_start, range_end, chunk, callback) {
     let headers = { 'Range': `bytes=${range_start}-${range_end}` };
-    return this._client.request('POST', `/outbound/documents/${id}`, headers, `${chunk}`, {}, callback);
+    return this._client.request('POST', `/outbound/documents/${id}`, headers, chunk, {}, callback);
   }
 }
 

@@ -14,9 +14,9 @@ class InterFAX {
 
   constructor(credentials, debug) {
     this._client     = new Client(https, credentials, library.version, debug);
+    this.documents = new Documents(this._client);
     this._delivery   = new Delivery(this._client, this.documents);
 
-    this.documents = new Documents(this._client);
     this.outbound  = new Outbound(this._client, this._delivery);
     this.deliver   = this._delivery.deliver.bind(this._delivery);
 
