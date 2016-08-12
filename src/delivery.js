@@ -5,6 +5,8 @@ class Delivery {
   }
 
   deliver(params, callback) {
+    console.log(params);
+    console.log(callback);
   }
 }
 

@@ -9,16 +9,16 @@ class File {
 
     if (options.mimeType) {
       this.initializeBinary(location, options.mimeType);
-    } else if (location.startsWith("http://") || location.startsWith("https://")) {
+    } else if (location.startsWith('http://') || location.startsWith('https://')) {
       this.initializeUrl(location);
     } else {
-      this.initializePath(location)
+      this.initializePath(location);
     }
   }
 
   initializeBinary(data, mimeType) {
     if (data.length > this.chunkSize) {
-      return initializeDocument(data, mimeType);
+      return this.initializeDocument(data, mimeType);
     }
 
     this.header = `Content-Type: ${mimeType}`;
@@ -34,22 +34,24 @@ class File {
     let data = fs.readSync(path);
     let mimeType = mime.lookup(path);
 
-    initializeBinary(data, mimeType);
+    this.initializeBinary(data, mimeType);
   }
 
   initializeDocument(data, mimeType) {
-    this._client.documents.create('test.pdf', data.length)
+    let extension = mime.extension(mimeType);
+    let filename = `upload-${Date.now()}.${extension}`;
+    this._client.documents.create(filename, data.length)
       .then(document => {
         this._upload(0, document, data);
       });
   }
 
   _upload(cursor, document, data) {
-    if (cursor >= data.length) { return };
+    if (cursor >= data.length) { return; }
     let chunk = data.slice(cursor, cursor+this.chunkSize).toString('ASCII');
     let nextCursor = cursor+chunk.length;
 
-    interfax.documents.upload(document.id, cursor, nextCursor-1, chunk)
+    this._client.documents.upload(document.id, cursor, nextCursor-1, chunk)
       .then(() => { this._upload(nextCursor, document, data); });
   }
 }
