@@ -55,7 +55,6 @@ describe('File', () => {
     it('should auto upload large files', () => {
       let client = new Client(https, {username: 'username', password: 'password'});
       let documents = new Documents(client);
-      // let file;
 
       let _create = sinon.stub(documents, 'create');
       let _upload = sinon.stub(documents, 'upload');
