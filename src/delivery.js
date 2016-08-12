@@ -12,9 +12,11 @@ class Delivery {
     let [validatedParams, files] = this._validateParams(params);
     let fileObjects              = this._generateFileObjects(files);
     let body                     = this._bodyFor(fileObjects);
+    let length                   = this._lengthFor(body);
+
     let headers = {
       'Content-Type' : `multipart/mixed; boundary=${this._boundary}`,
-      'Content-Length' : Buffer.byteLength(body)
+      'Content-Length' : length
     };
 
     return this._client.request('POST', '/outbound/faxes', headers, body, validatedParams, callback);
@@ -28,7 +30,10 @@ class Delivery {
       throw new Error('Missing argument: file or files');
 
     let files = [params.file || params.files];
-    files = [].concat.apply([], files); // flatten array
+    files = this._flatten(files);
+
+    delete params['file'];
+    delete params['files'];
 
     return [params, files];
   }
@@ -44,9 +49,21 @@ class Delivery {
   }
 
   _bodyFor(files) {
-    return files.map(file => {
-      return `--${this._boundary}\r\n${file.header}\r\n\r\n${file.body}\r\n`;
-    }).join('') + `--${this._boundary}\r\n`;
+    let parts = files.map(file => {
+      return [`--${this._boundary}`, '\r\n', file.header, '\r\n\r\n', file.body, '\r\n\r\n'];
+    });
+    parts.push(`--${this._boundary}--`);
+    return this._flatten(parts);
+  }
+
+  _lengthFor(parts) {
+    return parts.reduce((prev, cur) => {
+      return prev + Buffer.byteLength(cur);
+    }, 0);
+  }
+
+  _flatten(list) {
+    return [].concat.apply([], list);
   }
 }
 

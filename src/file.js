@@ -51,7 +51,7 @@ class File {
 
   _upload(cursor, document, data) {
     if (cursor >= data.length) { return; }
-    let chunk = data.slice(cursor, cursor+this._chunkSize).toString('ASCII');
+    let chunk = data.slice(cursor, cursor+this._chunkSize);
     let nextCursor = cursor+chunk.length;
 
     this._documents.upload(document.id, cursor, nextCursor-1, chunk)

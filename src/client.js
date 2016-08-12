@@ -39,13 +39,7 @@ class Client {
     request.on('response', new ResponseHandler(emitter, this._debug));
     request.on('error', new ErrorHandler(emitter, this._debug));
 
-    if (body) {
-      if (this._debug) {
-        console.log(`Writing body (length: ${body.length})`);  // eslint-disable-line no-console
-        console.log(body); // eslint-disable-line no-console
-      }
-      request.write(body);
-    }
+    this._writeBody(request, body);
 
     request.end();
 
@@ -93,6 +87,18 @@ class Client {
   _query(params) {
     if (typeof(params) !== 'object') params = {};
     return Object.keys(params).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join('&');
+  }
+
+  _writeBody(request, body) {
+    if (!body) { return; }
+
+    if (typeof(body) === 'string') {
+      request.write(body);
+    } else {
+      for (let part of body) {
+        request.write(part);
+      }
+    }
   }
 
   _promise(emitter, callback) {
