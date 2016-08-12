@@ -1,6 +1,6 @@
 import File       from '../src/file.js';
 import Files      from '../src/files.js';
-import Client     from '../src/client.js';
+import Documents  from '../src/documents.js';
 
 import chai, { expect } from 'chai';
 import sinon            from 'sinon';
@@ -10,7 +10,7 @@ chai.use(sinonChai);
 
 let files;
 let file;
-let client;
+let documents;
 
 describe('Files', () => {
   it('should export a Files object', () => {
@@ -20,16 +20,16 @@ describe('Files', () => {
 
   describe('.instance', () => {
     beforeEach(() => {
-      client  = sinon.createStubInstance(Client);
-      files = new Files(client);
+      documents  = sinon.createStubInstance(Documents);
+      files = new Files(documents);
     });
 
     it('should be an Files object', () => {
       expect(files).to.be.an.instanceof(Files);
     });
 
-    it('should save the client', () => {
-      expect(files._client).to.be.equal(client);
+    it('should save the documents client', () => {
+      expect(files._documents).to.be.equal(documents);
     });
 
     describe('.create', () => {
@@ -39,7 +39,7 @@ describe('Files', () => {
 
       it('should return a new file', () => {
         expect(file).to.be.an.instanceof(File);
-        expect(file._client).to.eql(client);
+        expect(file._documents).to.eql(documents);
       });
     });
   });

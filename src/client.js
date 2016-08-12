@@ -4,10 +4,11 @@ import Promise          from 'bluebird';
 import EventEmitter     from 'events';
 
 class Client {
-  constructor(https, credentials, version) {
+  constructor(https, credentials, version, debug) {
     this._https = https;
     this._credentials = credentials || {};
     this._version = version;
+    this._debug = debug || false;
     this._validateCredentials();
   }
 
@@ -30,10 +31,22 @@ class Client {
     let options     = this._options(method, path, headers, params);
     var request     = this._https.request(options);
 
-    request.on('response', new ResponseHandler(emitter));
-    request.on('error', new ErrorHandler( emitter));
+    if (this._debug) {
+      console.log(headers); // eslint-disable-line no-console
+      console.log(options); // eslint-disable-line no-console
+    }
 
-    if (body) { request.write(body); }
+    request.on('response', new ResponseHandler(emitter, this._debug));
+    request.on('error', new ErrorHandler(emitter, this._debug));
+
+    if (body) {
+      if (this._debug) {
+        console.log(`Writing body (length: ${body.length})`);  // eslint-disable-line no-console
+        console.log(body); // eslint-disable-line no-console
+      }
+      request.write(body);
+    }
+
     request.end();
 
     return promise;

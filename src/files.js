@@ -1,12 +1,12 @@
 import File from './file';
 
 class Files {
-  constructor(client) {
-    this._client = client;
+  constructor(documents) {
+    this._documents = documents;
   }
 
   create(data, options) {
-    return new File(this._client, data, options);
+    return new File(this._documents, data, options);
   }
 }
 

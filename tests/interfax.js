@@ -29,8 +29,8 @@ describe('InterFAX', () => {
     });
 
     it('should initialise the generic client', () => {
-      expect(interfax.client).to.be.an.instanceof(Client);
-      expect(interfax.client._credentials).to.equal(credentials);
+      expect(interfax._client).to.be.an.instanceof(Client);
+      expect(interfax._client._credentials).to.equal(credentials);
     });
 
     it('should initialise the Account client', () => {
@@ -38,7 +38,7 @@ describe('InterFAX', () => {
     });
 
     it('should initialise the Delivery client', () => {
-      expect(interfax.delivery).to.be.an.instanceof(Delivery);
+      expect(interfax._delivery).to.be.an.instanceof(Delivery);
     });
 
     it('should initialise the Outbound client', () => {

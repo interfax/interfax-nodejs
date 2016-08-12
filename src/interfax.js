@@ -12,16 +12,17 @@ import https       from 'https';
 
 class InterFAX {
 
-  constructor(credentials) {
-    this.client = new Client(https, credentials, library.version);
+  constructor(credentials, debug) {
+    this._client     = new Client(https, credentials, library.version, debug);
+    this._delivery   = new Delivery(this._client, this.documents);
 
-    this.delivery  = new Delivery(this.client);
-    this.outbound  = new Outbound(this.client, this.delivery);
+    this.documents = new Documents(this._client);
+    this.outbound  = new Outbound(this._client, this._delivery);
+    this.deliver   = this._delivery.deliver.bind(this._delivery);
 
-    this.account   = new Account(this.client);
-    this.inbound   = new Inbound(this.client);
-    this.documents = new Documents(this.client);
-    this.files     = new Files(this.client);
+    this.account   = new Account(this._client);
+    this.inbound   = new Inbound(this._client);
+    this.files     = new Files(this._client, this.documents);
 
   }
 }

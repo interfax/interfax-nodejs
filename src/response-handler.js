@@ -2,8 +2,10 @@ import Image    from './image';
 import Location from './location';
 
 class ResponseHandler {
-  constructor(emitter) {
+  constructor(emitter, debug) {
     return (response) => {
+      if (debug) { console.log(response); } // eslint-disable-line no-console
+
       let result = '';
       let isJson      = response.headers['content-type'] == 'text/json';
       let isImage     = response.headers['content-type'] == 'image/tiff';
@@ -14,6 +16,8 @@ class ResponseHandler {
       });
 
       response.on('end', function() {
+        if (debug) { console.log(result); } // eslint-disable-line no-console
+
         if (isLocation) { result = new Location(response.headers['location']); }
         else if (isImage) { result = new Image(result); }
         else if (isJson && result.length > 0) { result = JSON.parse(result); }

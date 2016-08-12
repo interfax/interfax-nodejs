@@ -142,7 +142,7 @@ interfax.outbound.deliver({
 Additionally you can create a [`FaxFile`](#faxfile) with binary data and pass this in as well.
 
 ```js
-let data = fs.readSync('fax.pdf');
+let data = fs.readFileSync('fax.pdf');
 let file = interfax.files.create(data, mime_type: 'application/pdf');
 
 interfax.outbound.deliver({

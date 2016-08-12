@@ -2,8 +2,8 @@ import fs   from 'fs';
 import mime from 'mime';
 
 class File {
-  constructor(client, location, options) {
-    this._client = client;
+  constructor(documents, location, options) {
+    this._documents = documents;
     options = options || {};
     this._chunkSize = options.chunkSize || 1024*1024;
 
@@ -17,7 +17,7 @@ class File {
   }
 
   initializeBinary(data, mimeType) {
-    if (data.length > this.chunkSize) {
+    if (data.length > this._chunkSize) {
       return this.initializeDocument(data, mimeType);
     }
 
@@ -31,7 +31,7 @@ class File {
   }
 
   initializePath(path) {
-    let data = fs.readSync(path);
+    let data = fs.readFileSync(path);
     let mimeType = mime.lookup(path);
 
     this.initializeBinary(data, mimeType);
@@ -40,18 +40,21 @@ class File {
   initializeDocument(data, mimeType) {
     let extension = mime.extension(mimeType);
     let filename = `upload-${Date.now()}.${extension}`;
-    this._client.documents.create(filename, data.length)
+    this._documents.create(filename, data.length)
       .then(document => {
+        this.header = `Content-Location: ${document.url}`;
+        this.body = null;
+
         this._upload(0, document, data);
       });
   }
 
   _upload(cursor, document, data) {
     if (cursor >= data.length) { return; }
-    let chunk = data.slice(cursor, cursor+this.chunkSize).toString('ASCII');
+    let chunk = data.slice(cursor, cursor+this._chunkSize).toString('ASCII');
     let nextCursor = cursor+chunk.length;
 
-    this._client.documents.upload(document.id, cursor, nextCursor-1, chunk)
+    this._documents.upload(document.id, cursor, nextCursor-1, chunk)
       .then(() => { this._upload(nextCursor, document, data); });
   }
 }
