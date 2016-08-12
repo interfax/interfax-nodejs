@@ -39,6 +39,10 @@ describe('Client', () => {
       expect(client._version).to.be.equal(version);
     });
 
+    it('should set the debug to false by default', () => {
+      expect(client._debug).to.be.equal(false);
+    });
+
     it('should raise if the username is missing', () => {
       expect(() => {
         new Client({password: 'bar'});
@@ -185,6 +189,34 @@ describe('Client', () => {
       });
 
       client.request('POST', '/foo/bar', { 'foo' : 'bar' }, 'foo', {limit: 1}, () => {});
+
+      _https.verify();
+      _https.restore();
+    });
+
+    it('should accept a list of body parts', (done) => {
+      let _https = sinon.mock(https);
+
+      _https.expects('request').once().withArgs({
+        auth: 'foo:bar',
+        headers: { 'User-Agent': 'InterFAX Node 1.0', 'foo' : 'bar' },
+        host: 'rest.interfax.net',
+        method: 'POST',
+        path: '/foo/bar?limit=1',
+        port: 443
+      }).returns({
+        on: function(_, handler){
+          expect(handler).to.be.an.instanceof(Function);
+        },
+        end: function(){
+          done();
+        },
+        write: function(data) {
+          expect(data).to.eql('foo');
+        }
+      });
+
+      client.request('POST', '/foo/bar', { 'foo' : 'bar' }, ['foo'], {limit: 1}, () => {});
 
       _https.verify();
       _https.restore();
