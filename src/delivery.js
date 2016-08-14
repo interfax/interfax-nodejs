@@ -37,11 +37,11 @@ class Delivery {
   }
 
   _emitDeliverySuccess(result) {
-    emitter.emit('resolve', result);
+    this._emitter.emit('resolve', result);
   }
 
   _emitDeliveryFailure(error) {
-    emitter.emit('reject', error);
+    this._emitter.emit('reject', error);
   }
 
   _validateParams(params) {

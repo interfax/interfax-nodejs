@@ -77,7 +77,7 @@ class File {
       return this._documents.upload(document.id, cursor, nextCursor-1, chunk)
         .then(this._upload(nextCursor, document, data).bind(this))
         .catch(this._triggerReady.bind(this));
-    }
+    };
   }
 
   _triggerReady(response) {
