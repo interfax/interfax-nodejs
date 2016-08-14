@@ -21,7 +21,7 @@ The module is written in ES6 and is compiled to ES5 for backwards compatibility.
 
 ## Getting started
 
-All our API calls support Promises to handle asynchrounous callbacks. For example to send a fax from a PDF file:
+All our API calls support Promises to handle asynchronous callbacks. For example to send a fax from a PDF file:
 
 ```js
 import InterFAX from 'interfax';
@@ -31,10 +31,15 @@ interfax.deliver({
   faxNumber : '+11111111112',
   file : 'folder/fax.pdf'
 }).then(fax => {
-  console.log(fax.id); //=> the Fax ID just created
+  return interfax.outbound.find(fax.id);
+  //=> find the fax we just created
+}).then(fax => {
+  console.log(fax.status);
+  //=> the status of the fax we just sent
 })
 .catch(error => {
-  console.log(error); //=> an error object
+  console.log(error);
+  //=> an error object
 });
 ```
 
@@ -46,9 +51,11 @@ interfax.deliver({
   file : 'folder/fax.pdf'
 }, function(error, response) {
   if (error) {
-    console.log(error); //=> an error object
+    console.log(error);
+    //=> an error object
   } else {
-    console.log(response.id); //=> the Fax ID just created
+    console.log(response.id);
+    //=> the ID of the Fax just created
   }
 });
 ```
@@ -89,9 +96,7 @@ Determine the remaining faxing credits in your account.
 
 ```js
 interfax.account.balance()
-  .then(balance => {
-    console.log(balance); //=> 9.86
-  });
+  .then(console.log); //=> 9.86
 ```
 
 **More:** [documentation](https://www.interfax.net/en/dev/rest/reference/3001)
@@ -133,14 +138,13 @@ interfax.outbound.deliver({
   faxNumber: '+11111111112',
   file: 'folder/fax.txt'
 }).then(fax => {
-  interfax.outbound.cancel(fax.id)
-    .then(success => {
-      // now the fax is cancelled
-    });
-});
+  return interfax.outbound.cancel(fax.id);
+}).then(success => {
+  //=> now the fax is cancelled
+});;
 ```
 
-Additionally you can create a [`FaxFile`](#faxfile) with binary data and pass this in as well.
+Additionally you can create a [`File`](#faxfile) with binary data and pass this in as well.
 
 ```js
 let data = fs.readFileSync('fax.pdf');
@@ -152,7 +156,7 @@ interfax.outbound.deliver({
 }).then(...);
 ```
 
-To send multiple files just pass in an array of strings and [`FaxFile`](#faxfile) objects.
+To send multiple files just pass in an array of strings and [`File`](#faxfile) objects.
 
 ```js
 interfax.outbound.deliver({
@@ -161,7 +165,7 @@ interfax.outbound.deliver({
 }).then(...);
 ```
 
-Under the hood every path and string is turned into a  [`FaxFile`](#faxfile) object. For more information see [the documentation](#faxfile) for this class.
+Under the hood every path and string is turned into a  [`File`](#faxfile) object. For more information see [the documentation](#faxfile) for this class.
 
 **Options:** [`contact`, `postponeTime`, `retriesToPerform`, `csid`, `pageHeader`, `reference`, `pageSize`, `fitToPage`, `pageOrientation`, `resolution`, `rendering`](https://www.interfax.net/en/dev/rest/reference/2918)
 
@@ -404,15 +408,15 @@ import fs from 'fs';
 
 let upload = function(cursor = 0, document, data) {
   if (cursor >= data.length) { return };
-  let chunk = data.slice(cursor, cursor+500).toString('ASCII');
-  let next_cursor = cursor+chunk.length;
+  let chunk = data.slice(cursor, cursor+500);
+  let next_cursor = cursor+Buffer.byteLength(chunk);
 
   interfax.documents.upload(document.id, cursor, next_cursor-1, chunk)
     .then(() => { upload(next_cursor, document, data); });
 }
 
 fs.readFile('tests/test.pdf', function(err, data){
-  interfax.documents.create('test.pdf', data.length)
+  interfax.documents.create('test.pdf', Buffer.byteLength(data))
     .then(document => { upload(0, document, data); });
 });
 ```
@@ -514,3 +518,4 @@ interfax.documents.cancel(123456)
 ## License
 
 This library is released under the [MIT License](LICENSE).
+E).
