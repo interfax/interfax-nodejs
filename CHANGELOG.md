@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.0]
+
+Big change to document uploading and how it is tied into the File objects and
+multi part delivery.
+
 ## [0.5.0]
 
 Add fax delivery.
@@ -30,6 +35,8 @@ Cleans up the README.
 
 Adds all outbound calls except for sending faxes.
 
+[0.6.0]: https://github.com/interfax/interfax-node/tree/v0.6.0
+[0.5.0]: https://github.com/interfax/interfax-node/tree/v0.5.0
 [0.4.0]: https://github.com/interfax/interfax-node/tree/v0.4.0
 [0.3.0]: https://github.com/interfax/interfax-node/tree/v0.3.0
 [0.2.1]: https://github.com/interfax/interfax-node/tree/v0.2.1
