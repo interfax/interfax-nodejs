@@ -1,11 +1,13 @@
 import Delivery    from '../src/delivery.js';
 import Client      from '../src/client.js';
 import Documents   from '../src/documents.js';
+import File        from '../src/file.js';
 
 import chai, { expect } from 'chai';
 import sinon            from 'sinon';
 import sinonChai        from 'sinon-chai';
-import EventEmitter     from 'events';
+import Promise          from 'bluebird';
+// import EventEmitter     from 'events';
 
 chai.use(sinonChai);
 
@@ -41,41 +43,19 @@ describe('Delivery', () => {
     });
 
     describe('.deliver', () => {
-      beforeEach(() => {
-        let emitter = new EventEmitter();
-        promise = client._promise(emitter, null);
-        spy = client.request.returns(promise);
-      });
+      it('should call generate the objects', () => {
+        spy = sinon.stub(delivery, '_generateFileObjects');
 
-      it('should call the client with the right params', () => {
         delivery.deliver({
           faxNumber: '1234567890',
           file: 'tests/test.pdf'
-        }).then(() => {
-          expect(client.request).to.have.been.called;
-          expect(spy.args[0][0]).to.eql('POST');
-          expect(spy.args[0][1]).to.eql('/outbound/faxes');
-          expect(spy.args[0][2]['Content-Length']).to.eql(9256);
-          expect(spy.args[0][3].length).to.eql(7);
-          expect(spy.args[0][4]['faxNumber']).to.eql('1234567890');
-          expect(spy.args[0][4]['file']).to.eql(undefined);
         });
+
+        expect(spy).to.have.been.called;
+        expect(spy.args[0][0]).to.include('tests/test.pdf');
+        expect(spy.args[0][1]).to.be.a('function');
       });
 
-      it('should accept a list of files', () => {
-        delivery.deliver({
-          faxNumber: '1234567890',
-          files: ['tests/test.pdf', 'tests/test.html']
-        }).then(() => {
-          expect(client.request).to.have.been.called;
-          expect(spy.args[0][0]).to.eql('POST');
-          expect(spy.args[0][1]).to.eql('/outbound/faxes');
-          expect(spy.args[0][2]['Content-Length']).to.eql(9459);
-          expect(spy.args[0][3].length).to.eql(13);
-          expect(spy.args[0][4]['faxNumber']).to.eql('1234567890');
-          expect(spy.args[0][4]['files']).to.eql(undefined);
-        });
-      });
 
       it('should require a fax number', () => {
         expect(() => {
@@ -92,6 +72,30 @@ describe('Delivery', () => {
           });
         }).to.throw(Error);
       });
+
+    });
+
+    describe('._deliverFiles', () => {
+      beforeEach(() => {
+        promise = new Promise(() => {});
+        spy = client.request.returns(promise);
+      });
+
+      it('should accept a list of files', () => {
+        let files = [new File(client, 'tests/test.pdf')];
+        let result = delivery._deliverFiles({faxNumber: '1234567890'})(null, files);
+
+        expect(result).to.be.an.instanceof(Promise);
+
+        expect(client.request).to.have.been.called;
+        expect(spy.args[0][0]).to.eql('POST');
+        expect(spy.args[0][1]).to.eql('/outbound/faxes');
+        expect(spy.args[0][2]['Content-Length']).to.eql(9256);
+        expect(spy.args[0][3].length).to.eql(7);
+        expect(spy.args[0][4]['faxNumber']).to.eql('1234567890');
+        expect(spy.args[0][4]['files']).to.eql(undefined);
+      });
+
     });
   });
 });

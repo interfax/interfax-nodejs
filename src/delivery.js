@@ -4,35 +4,44 @@ import EventEmitter     from 'events';
 class Delivery {
 
   constructor(client, documents) {
-    this._client = client;
+    this._client    = client;
     this._documents = documents;
-    this._boundary = '43e578690a6d14bf1d776cd55e7d7e29';
+    this._boundary  = '43e578690a6d14bf1d776cd55e7d7e29';
+    this._emitter    = new EventEmitter();
   }
 
   deliver(params, callback) {
     let [validatedParams, files] = this._validateParams(params);
-    let emitter     = new EventEmitter();
+    let promise = this._promise(callback);
 
-    this._generateFileObjects(files, (error, fileObjects) => {
-      if (error) {
-        return emitter.emit('reject', error);
-      }
+    this._generateFileObjects(files, this._deliverFiles(validatedParams).bind(this));
 
-      let body                     = this._bodyFor(fileObjects);
-      let length                   = this._lengthFor(body);
+    return promise;
+  }
+
+  _deliverFiles(validatedParams) {
+    return (error, fileObjects) => {
+      if (error) { return this._emitDeliveryFailure(error); }
+
+      let body    = this._bodyFor(fileObjects);
+      let length  = this._lengthFor(body);
       let headers = {
         'Content-Type' : `multipart/mixed; boundary=${this._boundary}`,
         'Content-Length' : length
       };
 
-      this._client.request('POST', '/outbound/faxes', headers, body, validatedParams).then(result => {
-        emitter.emit('resolve', result);
-      }).catch(error => {
-        emitter.emit('reject', error);
-      });
-    });
+      return this._client.request('POST', '/outbound/faxes', headers, body, validatedParams)
+        .then(this._emitDeliverySuccess.bind(this))
+        .catch(this._emitDeliveryFailure.bind(this));
+    };
+  }
 
-    return this._promise(emitter, callback);
+  _emitDeliverySuccess(result) {
+    emitter.emit('resolve', result);
+  }
+
+  _emitDeliveryFailure(error) {
+    emitter.emit('reject', error);
   }
 
   _validateParams(params) {
@@ -91,13 +100,13 @@ class Delivery {
     return [].concat.apply([], list);
   }
 
-  _promise(emitter, callback) {
+  _promise(callback) {
     return new Promise((resolve, reject) => {
-      emitter.on('resolve', (response) => {
+      this._emitter.on('resolve', (response) => {
         if (callback) { callback(null, response); }
         resolve(response);
       });
-      emitter.on('reject', (error) => {
+      this._emitter.on('reject', (error) => {
         if (callback) { callback(error, null); }
         reject(error);
       });

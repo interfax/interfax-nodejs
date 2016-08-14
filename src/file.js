@@ -20,7 +20,7 @@ class File {
   }
 
   onReady(callback) {
-    if (this.ready) return callback();
+    if (this.ready) return callback(this.ready);
     this._callbacks.push(callback);
   }
 
@@ -50,26 +50,34 @@ class File {
   initializeDocument(data, mimeType) {
     let extension = mime.extension(mimeType);
     let filename = `upload-${Date.now()}.${extension}`;
-    this._documents.create(filename, data.length)
-      .then(document => {
-        this.header = `Content-Location: ${document.url}`;
-        this.body = null;
 
-        this._upload(0, document, data);
-      });
+    this._documents.create(filename, data.length)
+      .then(this._startUpload(data).bind(this))
+      .catch(this._triggerReady.bind(this));
+  }
+
+  _startUpload(data) {
+    return (document) => {
+      this.header = `Content-Location: ${document.url}`;
+      this.body = null;
+
+      this._upload(0, document, data)();
+    };
   }
 
   _upload(cursor, document, data) {
-    if (cursor >= data.length) {
-      this._triggerReady(true);
-      return;
-    }
-    let chunk = data.slice(cursor, cursor+this._chunkSize);
-    let nextCursor = cursor+Buffer.byteLength(chunk);
+    let finished = (cursor >= data.length);
 
-    this._documents.upload(document.id, cursor, nextCursor-1, chunk)
-      .then(() => { this._upload(nextCursor, document, data); })
-      .catch((error) => { this._triggerReady(error); });
+    return () => {
+      if (finished) { return this._triggerReady(true); }
+
+      let chunk = data.slice(cursor, cursor+this._chunkSize);
+      let nextCursor = cursor+Buffer.byteLength(chunk);
+
+      return this._documents.upload(document.id, cursor, nextCursor-1, chunk)
+        .then(this._upload(nextCursor, document, data).bind(this))
+        .catch(this._triggerReady.bind(this));
+    }
   }
 
   _triggerReady(response) {
@@ -77,6 +85,7 @@ class File {
     for (let callback of this._callbacks) {
       callback(response);
     }
+    return this.ready;
   }
 }
 
