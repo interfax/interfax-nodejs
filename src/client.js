@@ -92,7 +92,7 @@ class Client {
   _writeBody(request, body) {
     if (!body) { return; }
 
-    if (typeof(body) === 'string') {
+    if (typeof(body) === 'string' || body instanceof Buffer) {
       request.write(body);
     } else {
       for (let part of body) {
