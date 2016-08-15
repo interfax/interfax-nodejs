@@ -15,7 +15,7 @@ This library requires Node 4+ and can be installed via NPM.
 npm install interfax --save
 ```
 
-The module is written in ES6 and is compiled to ES5 for backwards compatibility. All documentation below is ES6.
+This module is written in ES6 and is transpiled to ES5 for backwards compatibility. While all documentation below is written in ES6 this module works equally as well in ES5 projects.
 
 ## Getting started
 
@@ -164,6 +164,8 @@ interfax.outbound.deliver({
 ```
 
 Under the hood every path and string is turned into a  [`File`](#faxfile) object. For more information see [the documentation](#faxfile) for this class.
+
+Additionally this API will automatically detect large files and upload them in chunks using the [Documents API](#documents).
 
 **Options:** [`contact`, `postponeTime`, `retriesToPerform`, `csid`, `pageHeader`, `reference`, `pageSize`, `fitToPage`, `pageOrientation`, `resolution`, `rendering`](https://www.interfax.net/en/dev/rest/reference/2918)
 
@@ -399,7 +401,9 @@ interfax.inbound.resend(123456, 'test@example.com')
 
 [Create](#create-document) | [Upload chunk](#upload-chunk) | [Get list](#get-document-list) | [Status](#get-document-status) | [Cancel](#cancel-document)
 
-Document allow for uploading of large files up to 20MB in 200kb chunks. For example to upload a 500
+Documents allow for uploading of large files up to 20MB in 200kb chunks. In general you do no need to use this API yourself as the [`outbound.deliver`](#send-fax) method will automatically detect large files and upload them in chunks as documents.
+
+If you do wish to do this yourself the following example shows how you could upload a file in 500 byte chunks:
 
 ```js
 import fs from 'fs';
