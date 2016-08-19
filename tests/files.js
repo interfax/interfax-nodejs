@@ -9,7 +9,6 @@ import sinonChai        from 'sinon-chai';
 chai.use(sinonChai);
 
 let files;
-let file;
 let documents;
 
 describe('Files', () => {
@@ -33,13 +32,12 @@ describe('Files', () => {
     });
 
     describe('.create', () => {
-      beforeEach(() => {
-        file = files.create('https://foobar.com/file.pdf');
-      });
-
-      it('should return a new file', () => {
-        expect(file).to.be.an.instanceof(File);
-        expect(file._documents).to.eql(documents);
+      it('should return a new file', (done) => {
+        files.create('https://foobar.com/file.pdf').then((file) => {
+          expect(file).to.be.an.instanceof(File);
+          expect(file._documents).to.eql(documents);
+          done();
+        });
       });
     });
   });

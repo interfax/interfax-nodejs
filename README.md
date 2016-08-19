@@ -60,7 +60,7 @@ interfax.deliver({
 
 # Usage
 
-[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Helper Classes](#helper-classes)
+[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Files](#files)
 
 ## Client
 
@@ -142,7 +142,7 @@ interfax.outbound.deliver({
 });;
 ```
 
-Additionally you can create a [`File`](#faxfile) with binary data and pass this in as well.
+Additionally you can create a [`File`](#files) with binary data and pass this in as well.
 
 ```js
 let data = fs.readFileSync('fax.pdf');
@@ -154,7 +154,7 @@ interfax.outbound.deliver({
 }).then(...);
 ```
 
-To send multiple files just pass in an array of strings and [`File`](#faxfile) objects.
+To send multiple files just pass in an array of strings and [`File`](#files) objects.
 
 ```js
 interfax.outbound.deliver({
@@ -163,7 +163,7 @@ interfax.outbound.deliver({
 }).then(...);
 ```
 
-Under the hood every path and string is turned into a  [`File`](#faxfile) object. For more information see [the documentation](#faxfile) for this class.
+Under the hood every path and string is turned into a  [`File`](#files) object. For more information see [the documentation](#files) for this class.
 
 Additionally this API will automatically detect large files and upload them in chunks using the [Documents API](#documents).
 
@@ -509,6 +509,31 @@ interfax.documents.cancel(123456)
 
 ---
 
+## Files
+
+This class is used by `interfax.outbound.deliver` to turn every URL, path and binary data into a uniform format, ready to be sent out to the InterFAX API. Under the hood it automatically uploads large files in chunks using the [Documents](#documents) API.
+
+It is most useful for sending binary data to the `.deliver` method.
+
+```js
+interfax.files.create('....binary data.....', { mimeType: 'application/pdf' })
+  .then(file => {
+    console.log(file.header); //=> 'Content-Type: application/pdf'
+    console.log(file.body);   //=> ....binary data.....
+    interfax.outbound.deliver(faxNumber: '+1111111111112', file: file);
+  });
+```
+
+Additionally it can be used to turn a URL or path into a valid object as well, though the `.deliver` method does this conversion automatically.
+
+```js
+// a file by path
+interfax.files.create('foo/bar.pdf');
+
+// a file by url
+interfax.files.create('https://foo.com/bar.html');
+```
+
 ## Contributing
 
  1. **Fork** the repo on GitHub
@@ -520,4 +545,3 @@ interfax.documents.cancel(123456)
 ## License
 
 This library is released under the [MIT License](LICENSE).
-E).

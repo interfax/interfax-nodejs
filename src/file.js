@@ -79,7 +79,7 @@ class File {
         .catch(this._triggerReady.bind(this));
     };
   }
-
+  
   _triggerReady(response) {
     this.ready = (response === true);
     for (let callback of this._callbacks) {
