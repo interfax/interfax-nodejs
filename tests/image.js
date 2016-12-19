@@ -43,7 +43,7 @@ describe('Image', () => {
 
     describe('.extension', () => {
       it('should return the correct file extension', () => {
-        expect(image.extension()).to.equal('tiff');
+        expect(image.extension).to.equal('tiff');
       });
     });
   });

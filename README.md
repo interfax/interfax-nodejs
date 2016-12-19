@@ -229,13 +229,13 @@ interfax.outbound.find(123456)
 
 `interfax.outbound.image(fax_id, callback);`
 
-Retrieve the fax image (TIFF file) of a submitted fax.
+Retrieve the fax image (TIFF or PDF file) of a submitted fax.
 
 ```js
 interfax.outbound.image(123456)
   .then(image => {
-    console.log(image.data); //=> TIFF image data
-    image.save('file.tiff'); //=> saves image to file
+    console.log(image.data); //=> TIFF/PDF image data
+    image.save(`path/to/file.${image.extension}`); //=> saves image to file
   });
 ```
 
@@ -324,8 +324,8 @@ Retrieves a single fax's image.
 ```js
 interfax.inbound.image(123456)
   .then(image => {
-    console.log(image.data); //=> TIFF image data
-    image.save('file.tiff'); //=> saves image to file
+    console.log(image.data); //=> TIFF or PDF image data
+    image.save(`path/to/file.${image.extension}`); //=> saves image to file
   });
 ```
 

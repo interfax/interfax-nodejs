@@ -4,13 +4,11 @@ class Image {
   constructor(data, contentType) {
     this.data = data;
     this.contentType = contentType;
-  }
 
-  extension() {
     if (this.contentType == 'application/pdf') {
-      return "pdf";
+      this.extension = 'pdf';
     } else {
-      return "tiff";
+      this.extension = 'tiff';
     }
   }
 

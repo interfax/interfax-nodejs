@@ -54,7 +54,7 @@ describe('ResponseHandler', () => {
     it('should process an image response', (done) => {
       let emitter = new EventEmitter();
       emitter.on('resolve', (result) => {
-        expect(result).to.eql({ 'data': 'Hello World!', 'contentType' : 'application/pdf' });
+        expect(result).to.eql({ 'data': 'Hello World!', 'contentType' : 'application/pdf', 'extension' : 'pdf' });
         expect(result).to.be.instanceof(Image);
         done();
       });
