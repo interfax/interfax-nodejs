@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.0]
+
+Add support for saving PDF files as well as TIFF files.
+
+## [0.7.0]
+
+Add file documentation and change file API to use promises.
+
 ## [0.6.0]
 
 Big change to document uploading and how it is tied into the File objects and
@@ -35,6 +43,8 @@ Cleans up the README.
 
 Adds all outbound calls except for sending faxes.
 
+[0.8.0]: https://github.com/interfax/interfax-node/tree/v0.8.0
+[0.7.0]: https://github.com/interfax/interfax-node/tree/v0.7.0
 [0.6.0]: https://github.com/interfax/interfax-node/tree/v0.6.0
 [0.5.0]: https://github.com/interfax/interfax-node/tree/v0.5.0
 [0.4.0]: https://github.com/interfax/interfax-node/tree/v0.4.0
