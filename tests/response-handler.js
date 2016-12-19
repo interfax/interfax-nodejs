@@ -54,14 +54,14 @@ describe('ResponseHandler', () => {
     it('should process an image response', (done) => {
       let emitter = new EventEmitter();
       emitter.on('resolve', (result) => {
-        expect(result).to.eql({ 'data': 'Hello World!' });
+        expect(result).to.eql({ 'data': 'Hello World!', 'contentType' : 'application/pdf' });
         expect(result).to.be.instanceof(Image);
         done();
       });
 
       let handler = new ResponseHandler(emitter);
       let response = new EventEmitter();
-      response.headers = { 'content-type' : 'image/tiff' };
+      response.headers = { 'content-type' : 'application/pdf' };
 
       handler(response);
 

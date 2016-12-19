@@ -8,7 +8,10 @@ class ResponseHandler {
 
       let result = '';
       let isJson      = response.headers['content-type'] == 'text/json';
-      let isImage     = response.headers['content-type'] == 'image/tiff';
+      let isTiff      = response.headers['content-type'] == 'image/tiff';
+      let isPdf       = response.headers['content-type'] == 'application/pdf';
+      let isImage     = isTiff || isPdf;
+
       let isLocation  = response.headers['location'] !== undefined;
 
       response.on('data', function(chunk) {
@@ -19,7 +22,7 @@ class ResponseHandler {
         if (debug) { console.log(result); } // eslint-disable-line no-console
 
         if (isLocation) { result = new Location(response.headers['location']); }
-        else if (isImage) { result = new Image(result); }
+        else if (isImage) { result = new Image(result, response.headers['content-type']); }
         else if (isJson && result.length > 0) { result = JSON.parse(result); }
         else if (isJson && result.length == 0) { result = null; }
 

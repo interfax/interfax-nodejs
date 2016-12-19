@@ -13,7 +13,7 @@ describe('Image', () => {
 
   describe('.instance', () => {
     beforeEach(() => {
-      image = new Image('data');
+      image = new Image('data', 'contentType');
     });
 
     it('should be an Image object', () => {
@@ -24,6 +24,11 @@ describe('Image', () => {
       expect(image.data).to.be.equal('data');
     });
 
+    it('should have the content type', () => {
+      expect(image.contentType).to.be.equal('contentType');
+    });
+
+
     describe('.save', () => {
       it('should write out the data', () => {
         let writeFileSync = fs.writeFileSync;
@@ -33,6 +38,12 @@ describe('Image', () => {
         };
         image.save('file.tiff');
         fs.writeFileSync = writeFileSync;
+      });
+    });
+
+    describe('.extension', () => {
+      it('should return the correct file extension', () => {
+        expect(image.extension()).to.equal('tiff');
       });
     });
   });
