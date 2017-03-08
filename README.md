@@ -123,7 +123,7 @@ interfax.outbound.deliver({
 // or with a URL
 interfax.outbound.deliver({
   faxNumber: '+11111111112',
-  file: 'https://s3.aws.com/example/fax.pdf'
+  file: 'https://s3.aws.com/example/fax.html'
 }).then(...);
 ```
 
@@ -159,7 +159,7 @@ To send multiple files just pass in an array of strings and [`File`](#files) obj
 ```js
 interfax.outbound.deliver({
   faxNumber: "+11111111112",
-  files: ['file://fax.pdf', 'https://s3.aws.com/example/fax.pdf']
+  files: ['file://fax.pdf', 'https://s3.aws.com/example/fax.html']
 }).then(...);
 ```
 
