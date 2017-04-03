@@ -27,14 +27,22 @@ class ResponseHandler {
         else if (isJson && result.length == 0) { result = null; }
 
         if (response.statusCode >= 300) {
-          emitter.emit('reject', result);
+          emitter.emit('reject', {
+            status: response.statusCode,
+            body: result,
+            description: `Unexpected HTTP status code: ${response.statusCode}`
+          });
         } else {
           emitter.emit('resolve', result);
         }
       });
 
       response.on('close', function(error) {
-        emitter.emit('reject', error);
+        emitter.emit('reject', {
+          status: response.statusCode,
+          body: error,
+          description: 'Connection closed by peer'
+        });
       });
     };
   }
