@@ -37,7 +37,8 @@ interfax.deliver({
 })
 .catch(error => {
   console.log(error);
-  //=> an error object
+  //=> an error object with a status code,
+  //=> description and the body
 });
 ```
 
@@ -50,7 +51,8 @@ interfax.deliver({
 }, function(error, response) {
   if (error) {
     console.log(error);
-    //=> an error object
+    //=> an error object with a status code,
+    //=> description and the body
   } else {
     console.log(response.id);
     //=> the ID of the Fax just created
@@ -60,7 +62,7 @@ interfax.deliver({
 
 # Usage
 
-[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Files](#files)
+[Client](#client) | [Account](#account) | [Outbound](#outbound) | [Inbound](#inbound) | [Documents](#documents) | [Files](#files) | [Errrors](#errors)
 
 ## Client
 
@@ -533,6 +535,19 @@ interfax.files.create('foo/bar.pdf');
 // a file by url
 interfax.files.create('https://foo.com/bar.html');
 ```
+
+## Errors
+
+In case of any error the error object will wrap the HTTP status code, the body, and a handy description in one object. More details on the exact error objects can be found [on the reference documentation](https://www.interfax.net/en/node/10606).
+
+```js
+{
+  status: 200,
+  body: null,
+  description: 'Connection closed by peer'
+}
+```
+
 
 ## Contributing
 
