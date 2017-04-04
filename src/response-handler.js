@@ -26,8 +26,10 @@ class ResponseHandler {
         else if (isJson && result.length > 0) { result = JSON.parse(result); }
         else if (isJson && result.length == 0) { result = null; }
 
-        if (response.statusCode >= 300) {
+        if (response.statusCode >= 300 && result) {
           emitter.emit('reject', result);
+        } else if (response.statusCode >= 300) {
+          emitter.emit('reject', response);
         } else {
           emitter.emit('resolve', result);
         }

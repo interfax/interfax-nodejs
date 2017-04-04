@@ -103,6 +103,23 @@ describe('ResponseHandler', () => {
       response.emit('end');
     });
 
+    it('should process a status code error without a body', (done) => {
+      let emitter = new EventEmitter();
+      emitter.on('reject', (error) => {
+        expect(error.statusCode).to.eql(400);
+        done();
+      });
+
+      let handler = new ResponseHandler(emitter);
+      let response = new EventEmitter();
+      response.headers = { 'content-type' : 'text/json' };
+      response.statusCode = 400;
+
+      handler(response);
+
+      response.emit('end');
+    });
+
     it('should process an empty body', (done) => {
       let emitter = new EventEmitter();
       emitter.on('resolve', (result) => {
