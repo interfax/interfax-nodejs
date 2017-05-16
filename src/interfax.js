@@ -22,8 +22,7 @@ class InterFAX {
 
     this.account   = new Account(this._client);
     this.inbound   = new Inbound(this._client);
-    this.files     = new Files(this._client, this.documents);
-
+    this.files     = new Files(this.documents);
   }
 }
 

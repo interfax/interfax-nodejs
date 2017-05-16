@@ -146,12 +146,13 @@ Additionally you can create a [`File`](#files) with binary data and pass this in
 
 ```js
 let data = fs.readFileSync('fax.pdf');
-let file = interfax.files.create(data, {mimeType: 'application/pdf'});
-
-interfax.outbound.deliver({
-  faxNumber: "+11111111112",
-  file: file
-}).then(...);
+interfax.files.create(data, {mimeType: 'application/pdf'})
+  .then(function(file) {
+    interfax.outbound.deliver({
+      faxNumber: "+11111111112",
+      file: file
+    });
+  });
 ```
 
 To send multiple files just pass in an array of strings and [`File`](#files) objects.
