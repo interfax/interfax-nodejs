@@ -4,6 +4,8 @@ import Client       from '../src/client.js';
 import Outbound     from '../src/outbound.js';
 import Inbound      from '../src/inbound.js';
 import Delivery     from '../src/delivery.js';
+import Files        from '../src/files.js';
+import Documents    from '../src/documents.js';
 
 import { expect } from 'chai';
 
@@ -47,6 +49,11 @@ describe('InterFAX', () => {
 
     it('should initialise the Inbound client', () => {
       expect(interfax.inbound).to.be.an.instanceof(Inbound);
+    });
+
+    it('should initialise the Files client', () => {
+      expect(interfax.files).to.be.an.instanceof(Files);
+      expect(interfax.files._documents).to.be.an.instanceof(Documents);
     });
   });
 });
