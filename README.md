@@ -22,8 +22,9 @@ This module is written in ES6 and is transpiled to ES5 for backwards compatibili
 All our API calls support Promises to handle asynchronous callbacks. For example to send a fax from a PDF file:
 
 ```js
-import InterFAX from 'interfax';
-let interfax = new InterFAX();
+var InterFAX = require('interfax');
+// or: import InterFAX from 'interfax';
+var interfax = new InterFAX();
 
 interfax.deliver({
   faxNumber : '+11111111112',
@@ -67,10 +68,10 @@ interfax.deliver({
 The client follows the [12-factor](http://12factor.net/config) apps principle and can be either set directly or via environment variables.
 
 ```js
-import InterFAX from 'interfax';
+var InterFAX = require('interfax');
 
 // Initialize using parameters
-let interfax = new InterFAX({
+var interfax = new InterFAX({
   username: '...',
   password: '...'
 });
@@ -79,7 +80,7 @@ let interfax = new InterFAX({
 // environment variables
 // * INTERFAX_USERNAME
 // * INTERFAX_PASSWORD
-let interfax = new InterFAX();
+var interfax = new InterFAX();
 ```
 
 All connections are established over HTTPS.
@@ -145,7 +146,7 @@ interfax.outbound.deliver({
 Additionally you can create a [`File`](#files) with binary data and pass this in as well.
 
 ```js
-let data = fs.readFileSync('fax.pdf');
+var data = fs.readFileSync('fax.pdf');
 interfax.files.create(data, {mimeType: 'application/pdf'})
   .then(function(file) {
     interfax.outbound.deliver({
@@ -407,12 +408,12 @@ Documents allow for uploading of large files up to 20MB in 200kb chunks. In gene
 If you do wish to do this yourself the following example shows how you could upload a file in 500 byte chunks:
 
 ```js
-import fs from 'fs';
+var fs = require('fs');
 
-let upload = function(cursor = 0, document, data) {
+var upload = function(cursor = 0, document, data) {
   if (cursor >= data.length) { return };
-  let chunk = data.slice(cursor, cursor+500);
-  let next_cursor = cursor+Buffer.byteLength(chunk);
+  var chunk = data.slice(cursor, cursor+500);
+  var next_cursor = cursor+Buffer.byteLength(chunk);
 
   interfax.documents.upload(document.id, cursor, next_cursor-1, chunk)
     .then(() => { upload(next_cursor, document, data); });
