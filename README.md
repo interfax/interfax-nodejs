@@ -83,7 +83,16 @@ var interfax = new InterFAX({
 var interfax = new InterFAX();
 ```
 
-All connections are established over HTTPS.
+All connections are established over HTTPS. To debug the API calls, simply provide a second parameter to the initializer:
+
+
+```js
+var InterFAX = require('interfax');
+var interfax = new InterFAX({
+  username: '...',
+  password: '...'
+}, true); // passing true enables debugging mode
+```
 
 ## Account
 
