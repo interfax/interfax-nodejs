@@ -41,3 +41,4 @@ class ResponseHandler {
 }
 
 export default ResponseHandler;
+module.exports = exports['default'];
