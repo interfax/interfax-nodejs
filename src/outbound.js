@@ -31,6 +31,10 @@ class Outbound {
   search(params, callback) {
     return this._client.get('/outbound/search', params, callback);
   }
+  
+  hide(id, callback) {
+    return this._client.post(`/outbound/faxes/${id}/hide`, callback);
+  }
 }
 
 export default Outbound;
