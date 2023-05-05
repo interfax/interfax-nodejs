@@ -245,7 +245,7 @@ Retrieve the fax image (TIFF or PDF file) of a submitted fax.
 ```js
 interfax.outbound.image(123456)
   .then(image => {
-    console.log(image.data); //=> TIFF/PDF image data
+    console.log(image.dataBuffer); //=> TIFF/PDF image data
     image.save(`path/to/file.${image.extension}`); //=> saves image to file
   });
 ```
@@ -335,7 +335,7 @@ Retrieves a single fax's image.
 ```js
 interfax.inbound.image(123456)
   .then(image => {
-    console.log(image.data); //=> TIFF or PDF image data
+    console.log(image.dataBuffer); //=> TIFF or PDF image data
     image.save(`path/to/file.${image.extension}`); //=> saves image to file
   });
 ```
