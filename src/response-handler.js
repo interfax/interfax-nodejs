@@ -6,7 +6,7 @@ class ResponseHandler {
     return (response) => {
       if (debug) { console.log(response); } // eslint-disable-line no-console
 
-      let result = '';
+      let result = Buffer.from('');
       let isJson      = response.headers['content-type'] == 'text/json';
       let isTiff      = response.headers['content-type'] == 'image/tiff';
       let isPdf       = response.headers['content-type'] == 'application/pdf';
@@ -15,7 +15,7 @@ class ResponseHandler {
       let isLocation  = response.headers['location'] !== undefined;
 
       response.on('data', function(chunk) {
-        result += chunk;
+        result = Buffer.concat([result, chunk]);
       });
 
       response.on('end', function() {
@@ -23,7 +23,7 @@ class ResponseHandler {
 
         if (isLocation) { result = new Location(response.headers['location']); }
         else if (isImage) { result = new Image(result, response.headers['content-type']); }
-        else if (isJson && result.length > 0) { result = JSON.parse(result); }
+        else if (isJson && result.length > 0) { result = JSON.parse(result.toString()); }
         else if (isJson && result.length == 0) { result = null; }
 
         if (response.statusCode >= 300) {
